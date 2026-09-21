@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ms"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Choo Cottage - Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--brown:#8b6b4a;--bg:#fdfbf7;--green:#dcfce7;--yellow:#fef9c3;--red:#fee2e2}
+body{margin:0;font-family:Poppins;background:var(--bg);color:#333}
+.header{background:#fff;padding:16px 20px;box-shadow:0 2px 10px rgba(0,0,0,.05);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:20px}
+.stat{background:#fff;border-radius:16px;padding:16px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.04)}
+.stat b{font-size:26px;display:block;color:var(--brown)}
+.filters{background:#fff;margin:0 20px;padding:12px;border-radius:12px;display:flex;gap:8px;flex-wrap:wrap}
+input,select{padding:10px;border:1px solid #e8ddd0;border-radius:10px;font-family:Poppins}
+.table-wrap{margin:20px;background:#fff;border-radius:16px;overflow:auto;box-shadow:0 4px 20px rgba(0,0,0,.06)}
+table{width:100%;border-collapse:collapse;min-width:800px}
+th{background:#faf6f1;text-align:left;padding:12px;font-size:11px;letter-spacing:1px;color:var(--brown)}
+td{padding:12px;border-top:1px solid #f3eee6;font-size:13px}
+.badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.PAID{background:var(--green)}.Baru,.Baru\ .booking{background:var(--red)}.Resit{background:var(--yellow)}.CANCEL{background:#eee}
+.btn{border:none;padding:6px 10px;border-radius:20px;cursor:pointer;font-size:11px;margin:2px}
+.btn-paid{background:var(--brown);color:#fff}.btn-resit{background:#111;color:#fff}.btn-cancel{background:#eee}
+@media(max-width:768px){.stats{grid-template-columns:1fr 1fr}.header{flex-direction:column;gap:8px}}
+</style></head><body>
+<div class="header">
+<div><b style="color:var(--brown)">Choo Cottage</b> Dashboard</div>
+<div style="font-size:12px"><span id="clock"></span> | <a href="booking.html" target="_blank">Lihat Booking Page</a></div>
+</div>
+
+<div class="stats">
+<div class="stat"><b id="sTotal">0</b><small>Total Booking</small></div>
+<div class="stat"><b id="sPaid" style="color:green">RM0</b><small>Total PAID</small></div>
+<div class="stat"><b id="sPending">0</b><small>Pending Check</small></div>
+<div class="stat"><b id="sCancel">0</b><small>Cancel</small></div>
+</div>
+
+<div class="filters">
+<input id="q" placeholder="Cari nama / phone / email" onkeyup="render()" style="flex:1">
+<select id="fStatus" onchange="render()"><option value="">Semua Status</option><option>Baru</option><option>Resit Uploaded - Check!</option><option>PAID</option><option>CANCEL</option></select>
+<input type="date" id="fDate" onchange="render()">
+<button onclick="load()" style="background:var(--brown);color:#fff;border:none;padding:10px 16px;border-radius:10px;cursor:pointer">🔄 Refresh</button>
+</div>
+
+<div class="table-wrap">
+<table><thead><tr><th>Row</th><th>Guest</th><th>Tarikh</th><th>Malam / RM</th><th>Status</th><th>Resit</th><th>Action</th></tr></thead><tbody id="tbody"><tr><td colspan="7" style="text-align:center;padding:40px">Loading...</td></tr></tbody></table>
+</div>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbzlyuRQ1mqMYN1vYfmabj1JqqYjmF4jjU0lFiYHZQDMUEr00TQDK3I_aBz6jIkskE6-rg/exec";
+let DATA=[];
+
+async function load(){
+  tbody.innerHTML=`<tr><td colspan=7 style="text-align:center;padding:40px">Loading dari Sheet...</td></tr>`;
+  try{
+    let r=await fetch(API+"?action=list");
+    let txt=await r.text();
+    if(txt.trim().startsWith("<")){ tbody.innerHTML=`<tr><td colspan=7 style="color:red;padding:40px">❌ MASIH PRIVATE! Pergi Apps Script > Deploy > Manage > Anyone<br><br>Raw: ${txt.slice(0,200)}</td></tr>`; return; }
+    DATA=JSON.parse(txt);
+    render();
+  }catch(e){ tbody.innerHTML=`<tr><td colspan=7>Error: ${e}</td></tr>`; }
+}
+
+function render(){
+  let q=document.getElementById('q').value.toLowerCase();
+  let fs=document.getElementById('fStatus').value;
+  let fd=document.getElementById('fDate').value;
+  let filtered=DATA.filter(b=>{
+    if(fs && !b.status.includes(fs)) return false;
+    if(fd && b.checkin!==fd && b.checkout!==fd) return false;
+    if(q && !( (b.nama+b.phone+b.email).toLowerCase().includes(q) )) return false;
+    return true;
+  });
+  // stats
+  document.getElementById('sTotal').innerText=DATA.length;
+  document.getElementById('sPending').innerText=DATA.filter(x=>x.status.includes('Baru')||x.status.includes('Resit')).length;
+  document.getElementById('sCancel').innerText=DATA.filter(x=>x.status.includes('CANCEL')).length;
+  let totalPaid=DATA.filter(x=>x.status=='PAID').reduce((s,x)=>s+Number(x.jumlah||0),0);
+  document.getElementById('sPaid').innerText="RM"+totalPaid;
+
+  filtered.sort((a,b)=>b.row-a.row);
+  let html="";
+  filtered.forEach(b=>{
+    let malam=b.malam||1;
+    html+=`<tr>
+      <td>${b.row}</td>
+      <td><b>${b.nama}</b><br><small>${b.phone}<br>${b.email}</small></td>
+      <td><small>${b.checkin} → ${b.checkout}</small></td>
+      <td>${malam} malam<br><b>RM${b.jumlah}</b></td>
+      <td><span class="badge ${b.status.split(' ')[0]}">${b.status}</span></td>
+      <td>${b.resit?`<a href="${b.resit}" target="_blank" class="btn btn-resit">Lihat Resit</a>`:'Tiada'}</td>
+      <td>
+        <select onchange="updateStatus(${b.row},this.value)"><option disabled selected>Tukar Status</option><option>Baru</option><option>Resit Uploaded - Check!</option><option>PAID</option><option>CANCEL</option></select><br>
+        <button class="btn btn-paid" onclick="updateStatus(${b.row},'PAID')">✓ PAID</button>
+        <button class="btn btn-cancel" onclick="updateStatus(${b.row},'CANCEL')">✕ Cancel</button>
+        <button class="btn" style="background:#e0f2fe" onclick="wa(${b.row})">WA</button>
+      </td>
+    </tr>`;
+  });
+  tbody.innerHTML=html||`<tr><td colspan=7 style="text-align:center;padding:20px">Tiada data</td></tr>`;
+}
+
+async function updateStatus(row,status){
+  if(!confirm(`Tukar row ${row} jadi ${status}?`)) return;
+  let fd=new FormData(); // use fetch with text/plain to avoid CORS
+  await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'updateStatus',row,status})});
+  alert("Updated jadi "+status);
+  load();
+}
+function wa(row){
+  let b=DATA.find(x=>x.row==row);
+  window.open(`https://wa.me/${b.phone.replace(/[^0-9]/g,'')}?text=Hi%20${encodeURIComponent(b.nama)}%20booking%20${b.checkin}%20->%20${b.checkout}%20status%20${b.status}`,'_blank');
+}
+setInterval(()=>{ clock.innerText=new Date().toLocaleString('ms-MY'); },1000);
+load();
+</script></body></html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ms"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Choo Cottage - Booking</title>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"><script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<style>
+body{margin:0;font-family:Poppins;background:#fdfbf7;color:#333}
+.hero{background:linear-gradient(rgba(0,0,0,.4),rgba(0,0,0,.5)),url('choo.jpeg');background-size:cover;background-position:center;color:#fff;padding:70px 20px 90px;text-align:center}
+.hero h1{font-family:Great Vibes;font-size:62px;margin:0;font-weight:400}
+.card{max-width:980px;margin:-50px auto 40px;background:#fff;border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,.08);display:grid;grid-template-columns:1.1fr.9fr;overflow:hidden}
+.left,.right{padding:32px}.right{background:#faf6f1}
+.title{font-family:Playfair Display;font-size:24px;color:#8b6b4a}
+.price{font-size:38px;font-weight:600;color:#8b6b4a}.price span{font-size:13px;color:#888}
+input{width:100%;padding:13px;border:1px solid #e8ddd0;border-radius:12px;margin-top:6px;box-sizing:border-box;background:#fffdfb}
+label{font-size:11px;font-weight:600;letter-spacing:1px;margin-top:16px;display:block}
+.btn{width:100%;background:#8b6b4a;color:#fff;border:none;padding:15px;border-radius:30px;letter-spacing:1px;font-weight:600;cursor:pointer;margin-top:18px}
+.btn:disabled{opacity:.6}
+.total-box{background:#fff;border-radius:12px;padding:14px;margin-top:16px;border:1px dashed #c9b49a;text-align:center;font-size:13px}
+.qr-box{background:#fff;border-radius:16px;padding:16px;text-align:center;margin-top:12px;border:1px solid #e8ddd0}
+@media(max-width:768px){.card{grid-template-columns:1fr;margin:-30px 12px 30px}}
+</style></head><body>
+<div class="hero"><p style="letter-spacing:4px;font-size:11px">HOMESTAY PASIR PUTEH</p><h1>Choo Cottage</h1><p>LOT 1429 KG SRI AMAN 2</p></div>
+<div class="card">
+<div class="left">
+<div class="title">Booking Choo Cottage</div>
+<p style="font-size:12px;opacity:.7;line-height:1.6">Homestay kayu 3 bilik aircond, suasana kampung. Tarikh merah = dah penuh. Bayar guna QR & upload resit.</p>
+<div class="qr-box">
+<b style="color:#E4004D">DuitNow QR</b><br><b>ABDUL ALIF AFIFUDIN BIN C</b><br><small>Maybank 162345456789</small><br>
+<img src="qr.png" style="width:210px;margin:12px auto;border-radius:12px;display:block;border:2px solid #E4004D" onerror="this.style.display='none'">
+<small>Scan guna MAE / Banking App</small><br>
+<small style="font-size:8px;word-break:break-all;opacity:.4">00020201021126690014A000000615000101065887340220MAEPP111208931081248031317802054938475204000053034585802MY5925ABDUL ALIF AFIFUDIN BIN C6002MY63044B03</small>
+</div>
+<img src="choo.jpeg" style="width:100%;border-radius:12px;margin-top:14px;height:240px;object-fit:cover">
+<div style="display:flex;gap:8px;margin-top:12px">
+<a href="https://www.google.com/maps/place/Choo+Cottage/@5.8424217,102.3789854,1085m/data=!3m2!1e3!4b1!4m6!3m5!1s0x31b6935c11ff8c85:0x345db48279aae7e6!8m2!3d5.8424217!4d102.3815603!16s%2Fg%2F11fcs3_2bq" target="_blank" style="flex:1;text-align:center;text-decoration:none;background:#fff;border:1px solid #e8ddd0;padding:10px;border-radius:30px;font-size:11px;color:#5a4330">📍 Maps</a>
+<a href="https://waze.com/ul/hw30c1xxgw" target="_blank" style="flex:1;text-align:center;text-decoration:none;background:#fff;border:1px solid #e8ddd0;padding:10px;border-radius:30px;font-size:11px;color:#5a4330">🚗 Waze</a>
+</div>
+</div>
+<div class="right">
+<div class="price">RM<span id="pPrice">250</span> <span>/ malam</span></div>
+<form id="bookingForm">
+<label>Nama Penuh</label><input id="nama" required placeholder="Ali bin Abu">
+<label>No WhatsApp</label><input id="phone" required placeholder="0123456789">
+<label>Email</label><input id="email" type="email" required placeholder="ali@gmail.com">
+<label>Check-in</label><input id="checkin" required placeholder="Pilih tarikh">
+<label>Check-out</label><input id="checkout" required placeholder="Pilih tarikh">
+<div class="total-box" id="totalBox">Pilih tarikh untuk kira total</div>
+<label>Upload Resit Bayaran (Wajib)</label><input id="resit" type="file" accept="image/*,.pdf" required>
+<button class="btn" id="btnBook" type="submit">HANTAR BOOKING + RESIT</button>
+<p id="status" style="font-size:12px;text-align:center;margin-top:10px"></p>
+</form>
+</div>
+</div>
+<script>
+const PRICE_PER_NIGHT = 250;
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzOs9CEFjMTaNioE2-TpwmyMFCiZB7cJVOOqfjaH5R2lmK0BTkhLI2Ffi9a0DbFB9nH/exec";
+let fpIn, fpOut;
+
+async function loadBooked(){
+  try{
+    let r = await fetch(SCRIPT_URL);
+    let d = await r.json();
+    let dis=[];
+    d.forEach(b=>{
+      let s=new Date(b.checkin); let e=new Date(b.checkout);
+      for(let x=new Date(s); x<e; x.setDate(x.getDate()+1)){
+        dis.push(new Date(x).toISOString().split('T')[0]);
+      }
+    });
+    initCal(dis);
+  }catch(e){ initCal([]); }
+}
+
+function initCal(dis){
+  fpIn=flatpickr("#checkin",{minDate:"today",disable:dis,dateFormat:"Y-m-d",onChange:(s)=>{ if(s[0]){ fpOut.set('minDate', new Date(s[0].getTime()+86400000)); calc(); } }});
+  fpOut=flatpickr("#checkout",{minDate:"today",disable:dis,dateFormat:"Y-m-d",onChange:calc});
+}
+
+function calc(){
+  let cin=checkin.value, cout=checkout.value;
+  if(!cin||!cout) return;
+  let diff=Math.ceil((new Date(cout)-new Date(cin))/86400000);
+  if(diff<=0){ totalBox.innerHTML="Check-out mesti selepas Check-in"; return; }
+  let tot=diff*PRICE_PER_NIGHT;
+  pPrice.innerText=PRICE_PER_NIGHT;
+  totalBox.innerHTML=`${diff} malam x RM${PRICE_PER_NIGHT} = <b style="color:#8b6b4a;font-size:18px">RM${tot}</b>`;
+  totalBox.dataset.malam=diff;
+  totalBox.dataset.jumlah=tot;
+}
+
+document.getElementById('bookingForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  let btn=document.getElementById('btnBook');
+  let st=document.getElementById('status');
+  let file=document.getElementById('resit').files[0];
+
+  if(!totalBox.dataset.malam){ st.innerHTML="❌ Pilih tarikh dulu"; return; }
+  if(file.size > 7000000){ st.innerHTML="❌ File besar sangat, max 7MB. Compress dulu"; return; }
+
+  btn.textContent="SEDANG UPLOAD..."; btn.disabled=true;
+  st.innerText="Tengah simpan ke Sheet & Drive, kejap...";
+
+  let b64=await toBase64(file);
+  let payload={
+    nama:nama.value,
+    phone:phone.value,
+    email:email.value,
+    checkin:checkin.value,
+    checkout:checkout.value,
+    malam:totalBox.dataset.malam||1,
+    jumlah:totalBox.dataset.jumlah||PRICE_PER_NIGHT,
+    resitBase64:b64.split(',')[1],
+    resitType:file.type,
+    resitName:file.name
+  };
+
+  try{
+    let res=await fetch(SCRIPT_URL,{
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(payload)
+    });
+    let txt=await res.text();
+    console.log("RESPONSE:", txt);
+    let j=JSON.parse(txt);
+    if(j.status==="ok"){
+      st.innerHTML="✅ Berjaya! Booking masuk Sheet & Drive.";
+      btn.textContent="BERJAYA!";
+      setTimeout(()=>{ window.location.href=`https://api.whatsapp.com/send?phone=60189424611&text=Salam%20Choo%20Cottage,%20saya%20${encodeURIComponent(payload.nama)}%20booking%20${payload.checkin}%20->%20${payload.checkout}%20RM${payload.jumlah}`; },1200);
+    }else{
+      st.innerHTML="❌ Error: "+j.msg; btn.disabled=false; btn.textContent="HANTAR BOOKING + RESIT";
+    }
+  }catch(err){
+    st.innerHTML="❌ Gagal: "+err+"<br>Cuba refresh page.";
+    btn.disabled=false; btn.textContent="HANTAR BOOKING + RESIT";
+  }
+});
+
+function toBase64(f){ return new Promise((res,rej)=>{ let r=new FileReader(); r.readAsDataURL(f); r.onload=()=>res(r.result); r.onerror=rej; }); }
+
+loadBooked();
+</script>
+</body></html>
