@@ -1,114 +1,746 @@
 <!DOCTYPE html>
-<html lang="ms"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Choo Cottage - Dashboard</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
 <style>
-:root{--brown:#8b6b4a;--bg:#fdfbf7;--green:#dcfce7;--yellow:#fef9c3;--red:#fee2e2}
-body{margin:0;font-family:Poppins;background:var(--bg);color:#333}
-.header{background:#fff;padding:16px 20px;box-shadow:0 2px 10px rgba(0,0,0,.05);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:20px}
-.stat{background:#fff;border-radius:16px;padding:16px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.04)}
-.stat b{font-size:26px;display:block;color:var(--brown)}
-.filters{background:#fff;margin:0 20px;padding:12px;border-radius:12px;display:flex;gap:8px;flex-wrap:wrap}
-input,select{padding:10px;border:1px solid #e8ddd0;border-radius:10px;font-family:Poppins}
-.table-wrap{margin:20px;background:#fff;border-radius:16px;overflow:auto;box-shadow:0 4px 20px rgba(0,0,0,.06)}
-table{width:100%;border-collapse:collapse;min-width:800px}
-th{background:#faf6f1;text-align:left;padding:12px;font-size:11px;letter-spacing:1px;color:var(--brown)}
-td{padding:12px;border-top:1px solid #f3eee6;font-size:13px}
-.badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600}
-.PAID{background:var(--green)}.Baru,.Baru\ .booking{background:var(--red)}.Resit{background:var(--yellow)}.CANCEL{background:#eee}
-.btn{border:none;padding:6px 10px;border-radius:20px;cursor:pointer;font-size:11px;margin:2px}
-.btn-paid{background:var(--brown);color:#fff}.btn-resit{background:#111;color:#fff}.btn-cancel{background:#eee}
-@media(max-width:768px){.stats{grid-template-columns:1fr 1fr}.header{flex-direction:column;gap:8px}}
-</style></head><body>
-<div class="header">
-<div><b style="color:var(--brown)">Choo Cottage</b> Dashboard</div>
-<div style="font-size:12px"><span id="clock"></span> | <a href="booking.html" target="_blank">Lihat Booking Page</a></div>
+:root{
+  --brown:#8b6b4a;
+  --bg:#fdfbf7;
+  --green:#dcfce7;
+  --yellow:#fef9c3;
+  --red:#fee2e2;
+  --blue:#e0f2fe;
+  --dark:#111;
+  --border:#f3eee6;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Poppins,Arial,sans-serif;
+  background:var(--bg);
+  color:#333;
+}
+
+.hidden{display:none!important}
+
+.header{
+  background:#fff;
+  padding:16px 20px;
+  box-shadow:0 2px 10px rgba(0,0,0,.05);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:sticky;
+  top:0;
+  z-index:10;
+  gap:12px;
+}
+
+.header-title{
+  color:var(--brown);
+  font-weight:600;
+  font-size:18px;
+}
+
+.header-right{
+  font-size:12px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.header a{
+  color:var(--brown);
+  font-weight:600;
+  text-decoration:none;
+}
+
+.logout-btn{
+  background:#eee;
+  border:none;
+  border-radius:10px;
+  padding:8px 12px;
+  cursor:pointer;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  padding:20px;
+}
+
+.stat{
+  background:#fff;
+  border-radius:16px;
+  padding:16px;
+  text-align:center;
+  box-shadow:0 4px 12px rgba(0,0,0,.04);
+}
+
+.stat b{
+  font-size:26px;
+  display:block;
+  color:var(--brown);
+}
+
+.filters{
+  background:#fff;
+  margin:0 20px;
+  padding:12px;
+  border-radius:12px;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+input,select{
+  padding:10px;
+  border:1px solid #e8ddd0;
+  border-radius:10px;
+  font-family:Poppins,Arial,sans-serif;
+  background:#fff;
+}
+
+.filters input[type="text"]{
+  flex:1;
+  min-width:220px;
+}
+
+.refresh-btn{
+  background:var(--brown);
+  color:#fff;
+  border:none;
+  padding:10px 16px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.table-wrap{
+  margin:20px;
+  background:#fff;
+  border-radius:16px;
+  overflow:auto;
+  box-shadow:0 4px 20px rgba(0,0,0,.06);
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:850px;
+}
+
+th{
+  background:#faf6f1;
+  text-align:left;
+  padding:12px;
+  font-size:11px;
+  letter-spacing:1px;
+  color:var(--brown);
+  white-space:nowrap;
+}
+
+td{
+  padding:12px;
+  border-top:1px solid var(--border);
+  font-size:13px;
+  vertical-align:top;
+}
+
+.badge{
+  padding:5px 10px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:600;
+  display:inline-block;
+}
+
+.badge-paid{background:var(--green)}
+.badge-baru{background:var(--red)}
+.badge-resit{background:var(--yellow)}
+.badge-cancel{background:#eee}
+
+.btn{
+  border:none;
+  padding:7px 10px;
+  border-radius:20px;
+  cursor:pointer;
+  font-size:11px;
+  margin:2px;
+  font-family:Poppins,Arial,sans-serif;
+}
+
+.btn-paid{background:var(--brown);color:#fff}
+.btn-resit{background:var(--dark);color:#fff;text-decoration:none;display:inline-block}
+.btn-cancel{background:#eee}
+.btn-wa{background:var(--blue)}
+.btn-delete{background:#fee2e2;color:#991b1b}
+
+.action-box{
+  display:flex;
+  flex-wrap:wrap;
+  gap:4px;
+}
+
+.status-select{
+  width:100%;
+  margin-bottom:6px;
+}
+
+/* Login */
+.login-screen{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.login-card{
+  background:#fff;
+  width:100%;
+  max-width:380px;
+  border-radius:20px;
+  padding:24px;
+  box-shadow:0 8px 30px rgba(0,0,0,.08);
+}
+
+.login-card h2{
+  margin:0 0 8px;
+  color:var(--brown);
+}
+
+.login-card p{
+  margin-top:0;
+  font-size:13px;
+  color:#666;
+}
+
+.login-card input{
+  width:100%;
+  margin:10px 0;
+}
+
+.login-card button{
+  width:100%;
+  background:var(--brown);
+  color:#fff;
+  border:none;
+  border-radius:12px;
+  padding:12px;
+  cursor:pointer;
+  font-family:Poppins,Arial,sans-serif;
+}
+
+.error-msg{
+  color:#b91c1c;
+  font-size:12px;
+  margin-top:10px;
+}
+
+/* Mobile */
+@media(max-width:768px){
+  .header{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .stats{
+    grid-template-columns:1fr 1fr;
+    padding:14px;
+  }
+
+  .filters{
+    margin:0 14px;
+  }
+
+  .filters input,
+  .filters select,
+  .filters button{
+    width:100%;
+  }
+
+  .table-wrap{
+    margin:14px;
+    background:transparent;
+    box-shadow:none;
+    overflow:visible;
+  }
+
+  table{
+    min-width:0;
+  }
+
+  thead{
+    display:none;
+  }
+
+  tbody,
+  tr,
+  td{
+    display:block;
+    width:100%;
+  }
+
+  tr{
+    background:#fff;
+    margin-bottom:14px;
+    border-radius:16px;
+    box-shadow:0 4px 16px rgba(0,0,0,.06);
+    overflow:hidden;
+  }
+
+  td{
+    border-top:1px solid var(--border);
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    text-align:right;
+  }
+
+  td::before{
+    content:attr(data-label);
+    font-weight:600;
+    color:var(--brown);
+    text-align:left;
+    min-width:100px;
+  }
+
+  td:first-child{
+    border-top:none;
+  }
+
+  .action-box{
+    justify-content:flex-end;
+  }
+
+  .status-select{
+    max-width:180px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Login Screen -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <h2>Choo Cottage</h2>
+    <p>Admin Dashboard Login</p>
+
+    <input id="passwordInput" type="password" placeholder="Password" onkeydown="if(event.key==='Enter') login()">
+    <button onclick="login()">Login</button>
+
+    <div id="loginMsg" class="error-msg"></div>
+  </div>
 </div>
 
-<div class="stats">
-<div class="stat"><b id="sTotal">0</b><small>Total Booking</small></div>
-<div class="stat"><b id="sPaid" style="color:green">RM0</b><small>Total PAID</small></div>
-<div class="stat"><b id="sPending">0</b><small>Pending Check</small></div>
-<div class="stat"><b id="sCancel">0</b><small>Cancel</small></div>
-</div>
+<!-- App -->
+<div id="app" class="hidden">
 
-<div class="filters">
-<input id="q" placeholder="Cari nama / phone / email" onkeyup="render()" style="flex:1">
-<select id="fStatus" onchange="render()"><option value="">Semua Status</option><option>Baru</option><option>Resit Uploaded - Check!</option><option>PAID</option><option>CANCEL</option></select>
-<input type="date" id="fDate" onchange="render()">
-<button onclick="load()" style="background:var(--brown);color:#fff;border:none;padding:10px 16px;border-radius:10px;cursor:pointer">🔄 Refresh</button>
-</div>
+  <div class="header">
+    <div class="header-title">Choo Cottage Dashboard</div>
+    <div class="header-right">
+      <span id="clock"></span>
+      <a href="booking.html" target="_blank">Lihat Booking Page</a>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </div>
 
-<div class="table-wrap">
-<table><thead><tr><th>Row</th><th>Guest</th><th>Tarikh</th><th>Malam / RM</th><th>Status</th><th>Resit</th><th>Action</th></tr></thead><tbody id="tbody"><tr><td colspan="7" style="text-align:center;padding:40px">Loading...</td></tr></tbody></table>
+  <div class="stats">
+    <div class="stat"><b id="sTotal">0</b><small>Total Booking</small></div>
+    <div class="stat"><b id="sPaid" style="color:green">RM0</b><small>Total PAID</small></div>
+    <div class="stat"><b id="sPending">0</b><small>Pending Check</small></div>
+    <div class="stat"><b id="sCancel">0</b><small>Cancel</small></div>
+  </div>
+
+  <div class="filters">
+    <input id="q" type="text" placeholder="Cari nama / phone / email" onkeyup="render()">
+
+    <select id="fStatus" onchange="render()">
+      <option value="">Semua Status</option>
+      <option value="Baru">Baru</option>
+      <option value="Resit Uploaded - Check!">Resit Uploaded - Check!</option>
+      <option value="PAID">PAID</option>
+      <option value="CANCEL">CANCEL</option>
+    </select>
+
+    <input type="date" id="fDate" onchange="render()">
+
+    <button class="refresh-btn" onclick="load()">🔄 Refresh</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Row</th>
+          <th>Guest</th>
+          <th>Tarikh</th>
+          <th>Malam / RM</th>
+          <th>Status</th>
+          <th>Resit</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+        <tr>
+          <td colspan="7" style="text-align:center;padding:40px">Loading...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
 </div>
 
 <script>
-const API = "https://script.google.com/macros/s/AKfycbzlyuRQ1mqMYN1vYfmabj1JqqYjmF4jjU0lFiYHZQDMUEr00TQDK3I_aBz6jIkskE6-rg/exec";
-let DATA=[];
+const API = "https://script.google.com/macros/s/AKfycbxZ8ON5LoVOKEZ-phssVnabedkiCKMC-U83KszL3SSmVxd4t9VNI80VpHTgp3SNKbYk6g/exec";
+
+let DATA = [];
+let TOKEN = localStorage.getItem("cc_admin_token") || "";
+
+const $ = id => document.getElementById(id);
+
+function esc(v){
+  return String(v ?? "").replace(/[&<>"']/g, m => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
+  }[m]));
+}
+
+function safeUrl(url){
+  url = String(url || "").trim();
+  return /^https?:\/\//i.test(url) ? url : "#";
+}
+
+function statusClass(status){
+  status = String(status || "").toUpperCase();
+
+  if(status.includes("PAID")) return "badge-paid";
+  if(status.includes("CANCEL")) return "badge-cancel";
+  if(status.includes("RESIT")) return "badge-resit";
+  return "badge-baru";
+}
+
+function showApp(){
+  $("loginScreen").classList.add("hidden");
+  $("app").classList.remove("hidden");
+}
+
+function showLogin(){
+  $("app").classList.add("hidden");
+  $("loginScreen").classList.remove("hidden");
+}
+
+async function login(){
+  const password = $("passwordInput").value.trim();
+  $("loginMsg").innerText = "";
+
+  if(!password){
+    $("loginMsg").innerText = "Please enter password.";
+    return;
+  }
+
+  try{
+    const result = await apiPostRaw({
+      action:"login",
+      password
+    });
+
+    if(!result.ok){
+      $("loginMsg").innerText = result.message || "Wrong password.";
+      return;
+    }
+
+    TOKEN = result.token;
+    localStorage.setItem("cc_admin_token", TOKEN);
+
+    showApp();
+    load();
+
+  }catch(e){
+    $("loginMsg").innerText = "Login error: " + e.message;
+  }
+}
+
+function logout(){
+  TOKEN = "";
+  localStorage.removeItem("cc_admin_token");
+  DATA = [];
+  showLogin();
+}
+
+async function apiPostRaw(payload){
+  const r = await fetch(API, {
+    method:"POST",
+    headers:{
+      "Content-Type":"text/plain;charset=utf-8"
+    },
+    body:JSON.stringify(payload)
+  });
+
+  const txt = await r.text();
+
+  if(txt.trim().startsWith("<")){
+    throw new Error("Apps Script returned HTML. Check deployment access.");
+  }
+
+  return JSON.parse(txt);
+}
+
+async function apiPost(payload){
+  payload.token = TOKEN;
+
+  const result = await apiPostRaw(payload);
+
+  if(!result.ok){
+    if(result.message === "UNAUTHORIZED"){
+      logout();
+    }
+    throw new Error(result.message || "Request failed.");
+  }
+
+  return result;
+}
 
 async function load(){
-  tbody.innerHTML=`<tr><td colspan=7 style="text-align:center;padding:40px">Loading dari Sheet...</td></tr>`;
+  $("tbody").innerHTML = `
+    <tr>
+      <td colspan="7" style="text-align:center;padding:40px">
+        Loading dari Sheet...
+      </td>
+    </tr>
+  `;
+
   try{
-    let r=await fetch(API+"?action=list");
-    let txt=await r.text();
-    if(txt.trim().startsWith("<")){ tbody.innerHTML=`<tr><td colspan=7 style="color:red;padding:40px">❌ MASIH PRIVATE! Pergi Apps Script > Deploy > Manage > Anyone<br><br>Raw: ${txt.slice(0,200)}</td></tr>`; return; }
-    DATA=JSON.parse(txt);
+    const url = API + "?action=list&token=" + encodeURIComponent(TOKEN);
+    const r = await fetch(url, {cache:"no-store"});
+    const txt = await r.text();
+
+    if(txt.trim().startsWith("<")){
+      $("tbody").innerHTML = `
+        <tr>
+          <td colspan="7" style="color:red;padding:40px">
+            ❌ Apps Script returned HTML.<br>
+            Check: Deploy &gt; Manage deployment &gt; Anyone
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    const json = JSON.parse(txt);
+
+    if(Array.isArray(json)){
+      DATA = json;
+    }else if(json.ok && Array.isArray(json.data)){
+      DATA = json.data;
+    }else if(json.message === "UNAUTHORIZED"){
+      logout();
+      return;
+    }else{
+      throw new Error(json.message || "Invalid API response.");
+    }
+
     render();
-  }catch(e){ tbody.innerHTML=`<tr><td colspan=7>Error: ${e}</td></tr>`; }
+
+  }catch(e){
+    $("tbody").innerHTML = `
+      <tr>
+        <td colspan="7" style="color:red;padding:40px">
+          Error: ${esc(e.message)}
+        </td>
+      </tr>
+    `;
+  }
 }
 
 function render(){
-  let q=document.getElementById('q').value.toLowerCase();
-  let fs=document.getElementById('fStatus').value;
-  let fd=document.getElementById('fDate').value;
-  let filtered=DATA.filter(b=>{
-    if(fs && !b.status.includes(fs)) return false;
-    if(fd && b.checkin!==fd && b.checkout!==fd) return false;
-    if(q && !( (b.nama+b.phone+b.email).toLowerCase().includes(q) )) return false;
+  const q = $("q").value.toLowerCase().trim();
+  const fs = $("fStatus").value;
+  const fd = $("fDate").value;
+
+  let filtered = DATA.filter(b => {
+    const status = String(b.status || "");
+    const text = `${b.nama || ""} ${b.phone || ""} ${b.email || ""}`.toLowerCase();
+
+    if(fs && !status.includes(fs)) return false;
+
+    if(fd){
+      const checkin = String(b.checkin || "");
+      const checkout = String(b.checkout || "");
+
+      // Match checkin, checkout, or date between stay period
+      if(!(fd >= checkin && fd <= checkout)) return false;
+    }
+
+    if(q && !text.includes(q)) return false;
+
     return true;
   });
-  // stats
-  document.getElementById('sTotal').innerText=DATA.length;
-  document.getElementById('sPending').innerText=DATA.filter(x=>x.status.includes('Baru')||x.status.includes('Resit')).length;
-  document.getElementById('sCancel').innerText=DATA.filter(x=>x.status.includes('CANCEL')).length;
-  let totalPaid=DATA.filter(x=>x.status=='PAID').reduce((s,x)=>s+Number(x.jumlah||0),0);
-  document.getElementById('sPaid').innerText="RM"+totalPaid;
 
-  filtered.sort((a,b)=>b.row-a.row);
-  let html="";
-  filtered.forEach(b=>{
-    let malam=b.malam||1;
-    html+=`<tr>
-      <td>${b.row}</td>
-      <td><b>${b.nama}</b><br><small>${b.phone}<br>${b.email}</small></td>
-      <td><small>${b.checkin} → ${b.checkout}</small></td>
-      <td>${malam} malam<br><b>RM${b.jumlah}</b></td>
-      <td><span class="badge ${b.status.split(' ')[0]}">${b.status}</span></td>
-      <td>${b.resit?`<a href="${b.resit}" target="_blank" class="btn btn-resit">Lihat Resit</a>`:'Tiada'}</td>
-      <td>
-        <select onchange="updateStatus(${b.row},this.value)"><option disabled selected>Tukar Status</option><option>Baru</option><option>Resit Uploaded - Check!</option><option>PAID</option><option>CANCEL</option></select><br>
-        <button class="btn btn-paid" onclick="updateStatus(${b.row},'PAID')">✓ PAID</button>
-        <button class="btn btn-cancel" onclick="updateStatus(${b.row},'CANCEL')">✕ Cancel</button>
-        <button class="btn" style="background:#e0f2fe" onclick="wa(${b.row})">WA</button>
-      </td>
-    </tr>`;
+  $("sTotal").innerText = DATA.length;
+
+  $("sPending").innerText = DATA.filter(x => {
+    const s = String(x.status || "");
+    return s.includes("Baru") || s.includes("Resit");
+  }).length;
+
+  $("sCancel").innerText = DATA.filter(x => {
+    return String(x.status || "").includes("CANCEL");
+  }).length;
+
+  const totalPaid = DATA
+    .filter(x => String(x.status || "") === "PAID")
+    .reduce((sum,x) => sum + Number(x.jumlah || 0), 0);
+
+  $("sPaid").innerText = "RM" + totalPaid.toLocaleString("ms-MY");
+
+  filtered.sort((a,b) => Number(b.row || 0) - Number(a.row || 0));
+
+  let html = "";
+
+  filtered.forEach(b => {
+    const row = Number(b.row || 0);
+    const nama = esc(b.nama);
+    const phone = esc(b.phone);
+    const email = esc(b.email);
+    const checkin = esc(b.checkin);
+    const checkout = esc(b.checkout);
+    const malam = esc(b.malam || 1);
+    const jumlah = esc(b.jumlah || 0);
+    const status = esc(b.status || "Baru");
+    const resit = safeUrl(b.resit);
+
+    html += `
+      <tr>
+        <td data-label="Row">${row}</td>
+
+        <td data-label="Guest">
+          <div>
+            <b>${nama}</b><br>
+            <small>${phone}<br>${email}</small>
+          </div>
+        </td>
+
+        <td data-label="Tarikh">
+          <small>${checkin} → ${checkout}</small>
+        </td>
+
+        <td data-label="Malam / RM">
+          ${malam} malam<br><b>RM${jumlah}</b>
+        </td>
+
+        <td data-label="Status">
+          <span class="badge ${statusClass(status)}">${status}</span>
+        </td>
+
+        <td data-label="Resit">
+          ${
+            b.resit
+            ? `<a href="${resit}" target="_blank" class="btn-resit">Lihat Resit</a>`
+            : "Tiada"
+          }
+        </td>
+
+        <td data-label="Action">
+          <div class="action-box">
+            <select class="status-select" onchange="updateStatus(${row},this.value)">
+              <option disabled selected>Tukar Status</option>
+              <option>Baru</option>
+              <option>Resit Uploaded - Check!</option>
+              <option>PAID</option>
+              <option>CANCEL</option>
+            </select>
+
+            <button class="btn btn-paid" onclick="updateStatus(${row},'PAID')">✓ PAID</button>
+            <button class="btn btn-cancel" onclick="updateStatus(${row},'CANCEL')">✕ Cancel</button>
+            <button class="btn btn-wa" onclick="wa(${row})">WA</button>
+            <button class="btn btn-delete" onclick="deleteBooking(${row})">Delete</button>
+          </div>
+        </td>
+      </tr>
+    `;
   });
-  tbody.innerHTML=html||`<tr><td colspan=7 style="text-align:center;padding:20px">Tiada data</td></tr>`;
+
+  $("tbody").innerHTML = html || `
+    <tr>
+      <td colspan="7" style="text-align:center;padding:20px">
+        Tiada data
+      </td>
+    </tr>
+  `;
 }
 
 async function updateStatus(row,status){
+  if(!row) return;
+
   if(!confirm(`Tukar row ${row} jadi ${status}?`)) return;
-  let fd=new FormData(); // use fetch with text/plain to avoid CORS
-  await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'updateStatus',row,status})});
-  alert("Updated jadi "+status);
-  load();
+
+  try{
+    await apiPost({
+      action:"updateStatus",
+      row,
+      status
+    });
+
+    alert("Updated jadi " + status);
+    load();
+
+  }catch(e){
+    alert("Error: " + e.message);
+  }
 }
+
+async function deleteBooking(row){
+  if(!row) return;
+
+  const firstConfirm = confirm(`Delete booking row ${row}? This cannot be undone.`);
+  if(!firstConfirm) return;
+
+  const typed = prompt("Type DELETE to confirm:");
+  if(typed !== "DELETE") return;
+
+  try{
+    await apiPost({
+      action:"deleteBooking",
+      row
+    });
+
+    alert("Booking deleted.");
+    load();
+
+  }catch(e){
+    alert("Delete error: " + e.message);
+  }
+}
+
 function wa(row){
-  let b=DATA.find(x=>x.row==row);
-  window.open(`https://wa.me/${b.phone.replace(/[^0-9]/g,'')}?text=Hi%20${encodeURIComponent(b.nama)}%20booking%20${b.checkin}%20->%20${b.checkout}%20status%20${b.status}`,'_blank');
+  const b = DATA.find(x => Number(x.row) === Number(row));
+  if(!b) return;
+
+  let phone = String(b.phone || "").replace(/[^0-9]/g,"");
+
+  // Malaysia helper: if starts with 0, convert to 60
+  if(phone.startsWith("0")){
+    phone = "60" + phone.slice(1);
+  }
+
+  const msg = `Hi ${b.nama}, booking ${Login();
 }
-setInterval(()=>{ clock.innerText=new Date().toLocaleString('ms-MY'); },1000);
-load();
-</script></body></html>
+</script>
+
+</body>
+</html>
