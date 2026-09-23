@@ -738,7 +738,8 @@ function wa(row){
     phone = "60" + phone.slice(1);
   }
 
-  const msg = `Hi ${b.nama}, booking ${Login();
+  const msg = `Hi ${b.nama}, booking row ${b.row}.`;
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
 }
 </script>
 
