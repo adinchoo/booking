@@ -2,750 +2,138 @@
 <html lang="ms">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0f0f0f">
 <title>Choo Cottage - Dashboard</title>
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-
 <style>
 :root{
-  --brown:#8b6b4a;
-  --bg:#fdfbf7;
-  --green:#dcfce7;
-  --yellow:#fef9c3;
-  --red:#fee2e2;
-  --blue:#e0f2fe;
-  --dark:#111;
-  --border:#f3eee6;
+  --brown:#c9956a; --brown-dark:#a87750;
+  --bg:#0f0f0f; --surface:#1a1a1a; --surface2:#222; --surface3:#2a2a2a;
+  --border:#333; --text:#e8e8e8; --text-muted:#888;
+  --green:#166534; --green-text:#4ade80; --yellow:#854d0e; --yellow-text:#fde047;
+  --red:#7f1d1d; --red-text:#fca5a5; --blue:#1e3a5f; --blue-text:#7dd3fc;
 }
-
-*{box-sizing:border-box}
-
-body{
-  margin:0;
-  font-family:Poppins,Arial,sans-serif;
-  background:var(--bg);
-  color:#333;
+[data-theme="light"]{
+  --bg:#fdfbf7; --surface:#ffffff; --surface2:#faf6f1; --surface3:#f3ede4;
+  --border:#e8ddd0; --text:#3a2e26; --text-muted:#9a8a7a;
+  --green:#dcfce7; --green-text:#166534; --yellow:#fef9c3; --yellow-text:#854d0e;
+  --red:#fee2e2; --red-text:#991b1b; --blue:#dbeafe; --blue-text:#1e3a8a;
 }
-
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:Poppins,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background.25s,color.25s;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
 .hidden{display:none!important}
-
-.header{
-  background:#fff;
-  padding:16px 20px;
-  box-shadow:0 2px 10px rgba(0,0,0,.05);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  position:sticky;
-  top:0;
-  z-index:10;
-  gap:12px;
-}
-
-.header-title{
-  color:var(--brown);
-  font-weight:600;
-  font-size:18px;
-}
-
-.header-right{
-  font-size:12px;
-  display:flex;
-  gap:10px;
-  align-items:center;
-  flex-wrap:wrap;
-}
-
-.header a{
-  color:var(--brown);
-  font-weight:600;
-  text-decoration:none;
-}
-
-.logout-btn{
-  background:#eee;
-  border:none;
-  border-radius:10px;
-  padding:8px 12px;
-  cursor:pointer;
-}
-
-.stats{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
-  padding:20px;
-}
-
-.stat{
-  background:#fff;
-  border-radius:16px;
-  padding:16px;
-  text-align:center;
-  box-shadow:0 4px 12px rgba(0,0,0,.04);
-}
-
-.stat b{
-  font-size:26px;
-  display:block;
-  color:var(--brown);
-}
-
-.filters{
-  background:#fff;
-  margin:0 20px;
-  padding:12px;
-  border-radius:12px;
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-
-input,select{
-  padding:10px;
-  border:1px solid #e8ddd0;
-  border-radius:10px;
-  font-family:Poppins,Arial,sans-serif;
-  background:#fff;
-}
-
-.filters input[type="text"]{
-  flex:1;
-  min-width:220px;
-}
-
-.refresh-btn{
-  background:var(--brown);
-  color:#fff;
-  border:none;
-  padding:10px 16px;
-  border-radius:10px;
-  cursor:pointer;
-}
-
-.table-wrap{
-  margin:20px;
-  background:#fff;
-  border-radius:16px;
-  overflow:auto;
-  box-shadow:0 4px 20px rgba(0,0,0,.06);
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  min-width:850px;
-}
-
-th{
-  background:#faf6f1;
-  text-align:left;
-  padding:12px;
-  font-size:11px;
-  letter-spacing:1px;
-  color:var(--brown);
-  white-space:nowrap;
-}
-
-td{
-  padding:12px;
-  border-top:1px solid var(--border);
-  font-size:13px;
-  vertical-align:top;
-}
-
-.badge{
-  padding:5px 10px;
-  border-radius:20px;
-  font-size:11px;
-  font-weight:600;
-  display:inline-block;
-}
-
-.badge-paid{background:var(--green)}
-.badge-baru{background:var(--red)}
-.badge-resit{background:var(--yellow)}
-.badge-cancel{background:#eee}
-
-.btn{
-  border:none;
-  padding:7px 10px;
-  border-radius:20px;
-  cursor:pointer;
-  font-size:11px;
-  margin:2px;
-  font-family:Poppins,Arial,sans-serif;
-}
-
-.btn-paid{background:var(--brown);color:#fff}
-.btn-resit{background:var(--dark);color:#fff;text-decoration:none;display:inline-block}
-.btn-cancel{background:#eee}
-.btn-wa{background:var(--blue)}
-.btn-delete{background:#fee2e2;color:#991b1b}
-
-.action-box{
-  display:flex;
-  flex-wrap:wrap;
-  gap:4px;
-}
-
-.status-select{
-  width:100%;
-  margin-bottom:6px;
-}
-
-/* Login */
-.login-screen{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-}
-
-.login-card{
-  background:#fff;
-  width:100%;
-  max-width:380px;
-  border-radius:20px;
-  padding:24px;
-  box-shadow:0 8px 30px rgba(0,0,0,.08);
-}
-
-.login-card h2{
-  margin:0 0 8px;
-  color:var(--brown);
-}
-
-.login-card p{
-  margin-top:0;
-  font-size:13px;
-  color:#666;
-}
-
-.login-card input{
-  width:100%;
-  margin:10px 0;
-}
-
-.login-card button{
-  width:100%;
-  background:var(--brown);
-  color:#fff;
-  border:none;
-  border-radius:12px;
-  padding:12px;
-  cursor:pointer;
-  font-family:Poppins,Arial,sans-serif;
-}
-
-.error-msg{
-  color:#b91c1c;
-  font-size:12px;
-  margin-top:10px;
-}
-
-/* Mobile */
-@media(max-width:768px){
-  .header{
-    flex-direction:column;
-    align-items:flex-start;
-  }
-
-  .stats{
-    grid-template-columns:1fr 1fr;
-    padding:14px;
-  }
-
-  .filters{
-    margin:0 14px;
-  }
-
-  .filters input,
-  .filters select,
-  .filters button{
-    width:100%;
-  }
-
-  .table-wrap{
-    margin:14px;
-    background:transparent;
-    box-shadow:none;
-    overflow:visible;
-  }
-
-  table{
-    min-width:0;
-  }
-
-  thead{
-    display:none;
-  }
-
-  tbody,
-  tr,
-  td{
-    display:block;
-    width:100%;
-  }
-
-  tr{
-    background:#fff;
-    margin-bottom:14px;
-    border-radius:16px;
-    box-shadow:0 4px 16px rgba(0,0,0,.06);
-    overflow:hidden;
-  }
-
-  td{
-    border-top:1px solid var(--border);
-    display:flex;
-    justify-content:space-between;
-    gap:12px;
-    text-align:right;
-  }
-
-  td::before{
-    content:attr(data-label);
-    font-weight:600;
-    color:var(--brown);
-    text-align:left;
-    min-width:100px;
-  }
-
-  td:first-child{
-    border-top:none;
-  }
-
-  .action-box{
-    justify-content:flex-end;
-  }
-
-  .status-select{
-    max-width:180px;
-  }
-}
+.header{background:var(--surface);padding:12px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;gap:10px;transition:all.25s}
+.header-title{color:var(--brown);font-weight:600;font-size:18px;display:flex;align-items:center;gap:10px}
+.theme-btn{background:var(--surface2);border:1px solid var(--border);width:40px;height:40px;border-radius:12px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all.2s}
+.theme-btn:active{transform:scale(.92)}
+.header-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px}
+.header a{color:var(--brown);font-weight:600;text-decoration:none}
+.logout-btn{background:var(--surface3);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:7px 14px;cursor:pointer}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:20px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;text-align:center;transition:all.25s}
+.stat b{font-size:26px;display:block;color:var(--brown);margin-bottom:4px}
+.stat small{color:var(--text-muted);font-size:11px}
+.cal-wrap{background:var(--surface);margin:0 20px 16px;border:1px solid var(--border);border-radius:16px;padding:16px;transition:all.25s}
+.cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.cal-month{font-weight:600;color:var(--brown);font-size:16px}
+.cal-nav{background:var(--surface2);border:1px solid var(--border);color:var(--text);width:40px;height:40px;border-radius:12px;cursor:pointer;font-size:20px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal-dn{font-size:10px;font-weight:600;color:var(--text-muted);text-align:center;padding:6px 0}
+.cal-d{border:1px solid var(--border);border-radius:12px;min-height:70px;padding:6px;background:var(--surface2);cursor:pointer;transition:all.15s}
+.cal-d.booked{background:var(--red);border-color:var(--border)}.cal-d.today{outline:2px solid var(--brown)}
+.cal-d.empty{background:transparent;border-color:transparent;cursor:default}
+.cal-badge{font-size:9px;padding:2px 5px;border-radius:20px;margin-top:3px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.b-paid{background:var(--green);color:var(--green-text)}.b-baru{background:var(--yellow);color:var(--yellow-text)}
+.legend{display:flex;gap:14px;margin-top:12px;font-size:10px;color:var(--text-muted);justify-content:center}
+.filters{background:var(--surface);margin:0 20px 16px;padding:12px;border-radius:12px;border:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap;transition:all.25s}
+input,select{padding:12px;border:1px solid var(--border);border-radius:10px;font-size:16px;background:var(--surface2);color:var(--text)}
+.filters input[type="text"]{flex:1;min-width:200px}
+.refresh-btn{background:var(--brown);color:#fff;border:none;padding:12px 18px;border-radius:10px;cursor:pointer;font-weight:500}
+.table-wrap{margin:0 20px 30px;background:var(--surface);border-radius:16px;overflow:auto;border:1px solid var(--border);transition:all.25s}
+table{width:100%;border-collapse:collapse;min-width:850px}
+th{background:var(--surface2);text-align:left;padding:13px 14px;font-size:11px;color:var(--brown);border-bottom:1px solid var(--border);text-transform:uppercase}
+td{padding:13px 14px;border-top:1px solid var(--border);font-size:13px;color:var(--text)}
+.badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;display:inline-block}
+.badge-paid{background:var(--green);color:var(--green-text)}.badge-baru{background:var(--red);color:var(--red-text)}.badge-resit{background:var(--yellow);color:var(--yellow-text)}.badge-cancel{background:var(--surface3);color:var(--text-muted)}
+.btn{border:none;padding:8px 12px;border-radius:20px;cursor:pointer;font-size:11px;margin:2px}
+.btn-paid{background:var(--brown);color:#fff}.btn-wa{background:var(--blue);color:var(--blue-text)}.btn-delete{background:var(--red);color:var(--red-text)}.btn-cancel{background:var(--surface3);color:var(--text-muted);border:1px solid var(--border)}.btn-resit{background:var(--surface3);color:var(--text);border:1px solid var(--border);text-decoration:none;display:inline-block}
+.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg)}
+.login-card{background:var(--surface);width:100%;max-width:380px;border-radius:20px;padding:32px 28px;border:1px solid var(--border)}
+.login-card h2{color:var(--brown);text-align:center}
+.login-card p{color:var(--text-muted);text-align:center;margin-bottom:20px;font-size:13px}
+.login-card input{width:100%;margin-bottom:12px}.login-card button{width:100%;background:var(--brown);color:#fff;border:none;border-radius:12px;padding:14px;font-weight:600;cursor:pointer}
+.empty-state{text-align:center;padding:40px;color:var(--text-muted)}
+@media(max-width:768px){.stats{grid-template-columns:1fr 1fr;padding:14px}.filters input,.filters select,.filters button{width:100%}.table-wrap{margin:0 14px 20px;background:transparent;border:none;box-shadow:none;overflow:visible}thead{display:none}tbody,tr,td{display:block;width:100%}tr{background:var(--surface);margin-bottom:12px;border-radius:16px;border:1px solid var(--border);overflow:hidden}td{display:flex;justify-content:space-between;gap:12px;text-align:right;border-top:1px solid var(--border)}td::before{content:attr(data-label);font-weight:600;color:var(--brown);text-align:left;font-size:11px;text-transform:uppercase}td:first-child{border-top:none}.cal-wrap{margin:0 14px 14px}}
 </style>
 </head>
-
 <body>
-
-<!-- Login Screen -->
-<div id="loginScreen" class="login-screen">
-  <div class="login-card">
-    <h2>Choo Cottage</h2>
-    <p>Admin Dashboard Login</p>
-
-    <input id="passwordInput" type="password" placeholder="Password" onkeydown="if(event.key==='Enter') login()">
-    <button onclick="login()">Login</button>
-
-    <div id="loginMsg" class="error-msg"></div>
-  </div>
-</div>
-
-<!-- App -->
+<div id="loginScreen" class="login-screen"><div class="login-card"><h2>🏡 Choo Cottage</h2><p>Admin Dashboard</p><input id="passwordInput" type="password" placeholder="Password" onkeydown="if(event.key==='Enter') login()"><button onclick="login()">LOGIN</button><div id="loginMsg" style="color:var(--red-text);font-size:12px;text-align:center;margin-top:10px"></div></div></div>
 <div id="app" class="hidden">
-
   <div class="header">
-    <div class="header-title">Choo Cottage Dashboard</div>
-    <div class="header-right">
-      <span id="clock"></span>
-      <a href="booking.html" target="_blank">Lihat Booking Page</a>
-      <button class="logout-btn" onclick="logout()">Logout</button>
-    </div>
+    <div class="header-title">🏡 Admin <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button></div>
+    <div class="header-right"><span id="clock"></span><a href="index.html">Booking</a><button class="logout-btn" onclick="logout()">Logout</button></div>
   </div>
-
-  <div class="stats">
-    <div class="stat"><b id="sTotal">0</b><small>Total Booking</small></div>
-    <div class="stat"><b id="sPaid" style="color:green">RM0</b><small>Total PAID</small></div>
-    <div class="stat"><b id="sPending">0</b><small>Pending Check</small></div>
-    <div class="stat"><b id="sCancel">0</b><small>Cancel</small></div>
-  </div>
-
-  <div class="filters">
-    <input id="q" type="text" placeholder="Cari nama / phone / email" onkeyup="render()">
-
-    <select id="fStatus" onchange="render()">
-      <option value="">Semua Status</option>
-      <option value="Baru">Baru</option>
-      <option value="Resit Uploaded - Check!">Resit Uploaded - Check!</option>
-      <option value="PAID">PAID</option>
-      <option value="CANCEL">CANCEL</option>
-    </select>
-
-    <input type="date" id="fDate" onchange="render()">
-
-    <button class="refresh-btn" onclick="load()">🔄 Refresh</button>
-  </div>
-
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Row</th>
-          <th>Guest</th>
-          <th>Tarikh</th>
-          <th>Malam / RM</th>
-          <th>Status</th>
-          <th>Resit</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="tbody">
-        <tr>
-          <td colspan="7" style="text-align:center;padding:40px">Loading...</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
+  <div class="stats"><div class="stat"><b id="sTotal">0</b><small>Total</small></div><div class="stat"><b id="sPaid">RM0</b><small>PAID</small></div><div class="stat"><b id="sPending">0</b><small>Pending</small></div><div class="stat"><b id="sCancel">0</b><small>Cancel</small></div></div>
+  <div class="cal-wrap"><div class="cal-head"><button class="cal-nav" id="prevM">‹</button><div class="cal-month" id="calMonth"></div><button class="cal-nav" id="nextM">›</button></div><div class="cal-grid" id="calGrid"></div><div class="legend"><span>🟢 PAID</span><span>🟡 Baru</span><span>🔴 Penuh</span></div></div>
+  <div class="filters"><input id="q" type="text" placeholder="Cari nama/phone" onkeyup="render()"><select id="fStatus" onchange="render()"><option value="">Semua</option><option>Baru</option><option>Resit Uploaded - Check!</option><option>PAID</option><option>CANCEL</option></select><input type="date" id="fDate" onchange="render()"><button class="refresh-btn" onclick="load()">🔄</button><button class="refresh-btn" style="background:var(--surface3);color:var(--text)" onclick="clearFilter()">Clear</button></div>
+  <div class="table-wrap"><table><thead><tr><th>Row</th><th>Guest</th><th>Check-in/Out</th><th>RM</th><th>Status</th><th>Resit</th><th>Action</th></tr></thead><tbody id="tbody"></tbody></table></div>
 </div>
-
 <script>
-const API = "https://script.google.com/macros/s/AKfycbz8W0069GvW_ZsaFH1cdV8W_IEuptmPQ_rtZR2XTrM5de-sVxqY90rrFlx8exceZ2008g/exec";
+// THEME LOGIC
+const savedTheme = localStorage.getItem('cc_theme') || (window.matchMedia('(prefers-color-scheme: light)').matches? 'light' : 'dark');
+document.documentElement.setAttribute('data-theme', savedTheme);
+function updateThemeIcon(){ document.getElementById('themeBtn').innerText = document.documentElement.getAttribute('data-theme')==='light'? '🌙' : '☀️'; document.querySelector('meta[name="theme-color"]').setAttribute('content', savedTheme==='light'? '#fdfbf7' : '#0f0f0f'); }
+function toggleTheme(){ let cur=document.documentElement.getAttribute('data-theme'); let next=cur==='light'?'dark':'light'; document.documentElement.setAttribute('data-theme',next); localStorage.setItem('cc_theme',next); updateThemeIcon(); }
+updateThemeIcon();
 
-let DATA = [];
-let TOKEN = localStorage.getItem("cc_admin_token") || "";
-
-const $ = id => document.getElementById(id);
-
-function esc(v){
-  return String(v ?? "").replace(/[&<>"']/g, m => ({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#039;"
-  }[m]));
-}
-
-function safeUrl(url){
-  url = String(url || "").trim();
-  return /^https?:\/\//i.test(url) ? url : "#";
-}
-
-function statusClass(status){
-  status = String(status || "").toUpperCase();
-
-  if(status.includes("PAID")) return "badge-paid";
-  if(status.includes("CANCEL")) return "badge-cancel";
-  if(status.includes("RESIT")) return "badge-resit";
-  return "badge-baru";
-}
-
-function showApp(){
-  $("loginScreen").classList.add("hidden");
-  $("app").classList.remove("hidden");
-}
-
-function showLogin(){
-  $("app").classList.add("hidden");
-  $("loginScreen").classList.remove("hidden");
-}
-
-async function login(){
-  const password = $("passwordInput").value.trim();
-  $("loginMsg").innerText = "";
-
-  if(!password){
-    $("loginMsg").innerText = "Please enter password.";
-    return;
-  }
-
-  try{
-    const result = await apiPostRaw({
-      action:"login",
-      password
-    });
-
-    if(!result.ok){
-      $("loginMsg").innerText = result.message || "Wrong password.";
-      return;
-    }
-
-    TOKEN = result.token;
-    localStorage.setItem("cc_admin_token", TOKEN);
-
-    showApp();
-    load();
-
-  }catch(e){
-    $("loginMsg").innerText = "Login error: " + e.message;
-  }
-}
-
-function logout(){
-  TOKEN = "";
-  localStorage.removeItem("cc_admin_token");
-  DATA = [];
-  showLogin();
-}
-
-async function apiPostRaw(payload){
-  const r = await fetch(API, {
-    method:"POST",
-    headers:{
-      "Content-Type":"text/plain;charset=utf-8"
-    },
-    body:JSON.stringify(payload)
-  });
-
-  const txt = await r.text();
-
-  if(txt.trim().startsWith("<")){
-    throw new Error("Apps Script returned HTML. Check deployment access.");
-  }
-
-  return JSON.parse(txt);
-}
-
-async function apiPost(payload){
-  payload.token = TOKEN;
-
-  const result = await apiPostRaw(payload);
-
-  if(!result.ok){
-    if(result.message === "UNAUTHORIZED"){
-      logout();
-    }
-    throw new Error(result.message || "Request failed.");
-  }
-
-  return result;
-}
-
+// APP LOGIC
+const API="https://script.google.com/macros/s/AKfycbxZ8ON5LoVOKEZ-phssVnabedkiCKMC-U83KszL3SSmVxd4t9VNI80VpHTgp3SNKbYk6g/exec";
+const TOKEN_KEY="cc_admin_token";
+let DATA=[],TOKEN=localStorage.getItem(TOKEN_KEY)||"",curDate=new Date(),bookedMap={};
+const $=id=>document.getElementById(id);
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function safeUrl(u){return /^https?:\/\//i.test(String(u||"").trim())?u:"#";}
+function statusClass(s){s=String(s||"").toUpperCase();if(s==="PAID")return"badge-paid";if(s==="CANCEL")return"badge-cancel";if(s.includes("RESIT"))return"badge-resit";return"badge-baru"}
+function showApp(){$("loginScreen").classList.add("hidden");$("app").classList.remove("hidden")}
+function showLogin(){$("app").classList.add("hidden");$("loginScreen").classList.remove("hidden")}
+async function login(){let pw=$("passwordInput").value.trim();try{let r=await fetch(API,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({action:"login",password:pw})});let j=JSON.parse(await r.text());if(!j.ok){$("loginMsg").innerText=j.message;return}TOKEN=j.token;localStorage.setItem(TOKEN_KEY,TOKEN);showApp();load()}catch(e){$("loginMsg").innerText=e.message}}
+function logout(){TOKEN="";localStorage.removeItem(TOKEN_KEY);showLogin()}
 async function load(){
-  $("tbody").innerHTML = `
-    <tr>
-      <td colspan="7" style="text-align:center;padding:40px">
-        Loading dari Sheet...
-      </td>
-    </tr>
-  `;
-
-  try{
-    const url = API + "?action=list&token=" + encodeURIComponent(TOKEN);
-    const r = await fetch(url, {cache:"no-store"});
-    const txt = await r.text();
-
-    if(txt.trim().startsWith("<")){
-      $("tbody").innerHTML = `
-        <tr>
-          <td colspan="7" style="color:red;padding:40px">
-            ❌ Apps Script returned HTML.<br>
-            Check: Deploy &gt; Manage deployment &gt; Anyone
-          </td>
-        </tr>
-      `;
-      return;
-    }
-
-    const json = JSON.parse(txt);
-
-    if(Array.isArray(json)){
-      DATA = json;
-    }else if(json.ok && Array.isArray(json.data)){
-      DATA = json.data;
-    }else if(json.message === "UNAUTHORIZED"){
-      logout();
-      return;
-    }else{
-      throw new Error(json.message || "Invalid API response.");
-    }
-
-    render();
-
-  }catch(e){
-    $("tbody").innerHTML = `
-      <tr>
-        <td colspan="7" style="color:red;padding:40px">
-          Error: ${esc(e.message)}
-        </td>
-      </tr>
-    `;
-  }
+ try{
+  let r=await fetch(API+"?action=list&token="+encodeURIComponent(TOKEN),{cache:"no-store"});let j=JSON.parse(await r.text());
+  if(j.message==="UNAUTHORIZED"){logout();return} DATA=Array.isArray(j)?j:j.data||[];
+  buildMap(); render(); renderCal(curDate.getFullYear(),curDate.getMonth());
+ }catch(e){$("tbody").innerHTML='<tr><td colspan="7" style="text-align:center;padding:30px">❌ '+esc(e.message)+'</td></tr>'}
 }
-
+function buildMap(){bookedMap={}; DATA.forEach(b=>{if(String(b.status).toUpperCase()==="CANCEL")return; let s=new Date(b.checkin), e=new Date(b.checkout); for(let x=new Date(s); x<e; x.setDate(x.getDate()+1)){let iso=x.toISOString().split('T')[0]; if(!bookedMap[iso]) bookedMap[iso]=[]; bookedMap[iso].push(b)}})}
+function renderCal(y,m){
+ let grid=$("calGrid"), label=$("calMonth"), names=["Jan","Feb","Mac","Apr","Mei","Jun","Jul","Ogos","Sep","Okt","Nov","Dis"];
+ label.textContent=names[m]+" "+y; grid.innerHTML="";
+ ["AH","IS","SE","RA","KH","JU","SA"].forEach(d=>{let el=document.createElement('div');el.className="cal-dn";el.textContent=d;grid.appendChild(el);});
+ let first=new Date(y,m,1).getDay(), days=new Date(y,m+1,0).getDate();
+ for(let i=0;i<first;i++){let e=document.createElement('div');e.className="cal-d empty";grid.appendChild(e);}
+ for(let d=1;d<=days;d++){let iso=new Date(y,m,d).toISOString().split('T')[0], list=bookedMap[iso]||[]; let el=document.createElement('div'); el.className="cal-d "+(list.length?"booked":""); el.onclick=()=>{$("fDate").value=iso;render()}; el.innerHTML=`<div style="font-weight:600">${d}</div>${list.slice(0,2).map(b=>`<span class="cal-badge ${String(b.status)==="PAID"?"b-paid":"b-baru"}">${esc(b.nama).split(' ')[0]}</span>`).join("")}`; grid.appendChild(el);}
+}
+$("prevM").onclick=()=>{curDate.setMonth(curDate.getMonth()-1);renderCal(curDate.getFullYear(),curDate.getMonth())};
+$("nextM").onclick=()=>{curDate.setMonth(curDate.getMonth()+1);renderCal(curDate.getFullYear(),curDate.getMonth())};
+function clearFilter(){$("q").value="";$("fStatus").value="";$("fDate").value="";render()}
 function render(){
-  const q = $("q").value.toLowerCase().trim();
-  const fs = $("fStatus").value;
-  const fd = $("fDate").value;
-
-  let filtered = DATA.filter(b => {
-    const status = String(b.status || "");
-    const text = `${b.nama || ""} ${b.phone || ""} ${b.email || ""}`.toLowerCase();
-
-    if(fs && !status.includes(fs)) return false;
-
-    if(fd){
-      const checkin = String(b.checkin || "");
-      const checkout = String(b.checkout || "");
-
-      // Match checkin, checkout, or date between stay period
-      if(!(fd >= checkin && fd <= checkout)) return false;
-    }
-
-    if(q && !text.includes(q)) return false;
-
-    return true;
-  });
-
-  $("sTotal").innerText = DATA.length;
-
-  $("sPending").innerText = DATA.filter(x => {
-    const s = String(x.status || "");
-    return s.includes("Baru") || s.includes("Resit");
-  }).length;
-
-  $("sCancel").innerText = DATA.filter(x => {
-    return String(x.status || "").includes("CANCEL");
-  }).length;
-
-  const totalPaid = DATA
-    .filter(x => String(x.status || "") === "PAID")
-    .reduce((sum,x) => sum + Number(x.jumlah || 0), 0);
-
-  $("sPaid").innerText = "RM" + totalPaid.toLocaleString("ms-MY");
-
-  filtered.sort((a,b) => Number(b.row || 0) - Number(a.row || 0));
-
-  let html = "";
-
-  filtered.forEach(b => {
-    const row = Number(b.row || 0);
-    const nama = esc(b.nama);
-    const phone = esc(b.phone);
-    const email = esc(b.email);
-    const checkin = esc(b.checkin);
-    const checkout = esc(b.checkout);
-    const malam = esc(b.malam || 1);
-    const jumlah = esc(b.jumlah || 0);
-    const status = esc(b.status || "Baru");
-    const resit = safeUrl(b.resit);
-
-    html += `
-      <tr>
-        <td data-label="Row">${row}</td>
-
-        <td data-label="Guest">
-          <div>
-            <b>${nama}</b><br>
-            <small>${phone}<br>${email}</small>
-          </div>
-        </td>
-
-        <td data-label="Tarikh">
-          <small>${checkin} → ${checkout}</small>
-        </td>
-
-        <td data-label="Malam / RM">
-          ${malam} malam<br><b>RM${jumlah}</b>
-        </td>
-
-        <td data-label="Status">
-          <span class="badge ${statusClass(status)}">${status}</span>
-        </td>
-
-        <td data-label="Resit">
-          ${
-            b.resit
-            ? `<a href="${resit}" target="_blank" class="btn-resit">Lihat Resit</a>`
-            : "Tiada"
-          }
-        </td>
-
-        <td data-label="Action">
-          <div class="action-box">
-            <select class="status-select" onchange="updateStatus(${row},this.value)">
-              <option disabled selected>Tukar Status</option>
-              <option>Baru</option>
-              <option>Resit Uploaded - Check!</option>
-              <option>PAID</option>
-              <option>CANCEL</option>
-            </select>
-
-            <button class="btn btn-paid" onclick="updateStatus(${row},'PAID')">✓ PAID</button>
-            <button class="btn btn-cancel" onclick="updateStatus(${row},'CANCEL')">✕ Cancel</button>
-            <button class="btn btn-wa" onclick="wa(${row})">WA</button>
-            <button class="btn btn-delete" onclick="deleteBooking(${row})">Delete</button>
-          </div>
-        </td>
-      </tr>
-    `;
-  });
-
-  $("tbody").innerHTML = html || `
-    <tr>
-      <td colspan="7" style="text-align:center;padding:20px">
-        Tiada data
-      </td>
-    </tr>
-  `;
+ let q=$("q").value.toLowerCase(), fs=$("fStatus").value, fd=$("fDate").value;
+ let filtered=DATA.filter(b=>{let st=String(b.status||""); if(fs&&!st.includes(fs))return false; if(fd){if(!(fd>=String(b.checkin)&&fd<String(b.checkout)))return false} if(q&&!((b.nama||"")+" "+(b.phone||"")).toLowerCase().includes(q))return false; return true;});
+ $("sTotal").innerText=DATA.length; $("sPending").innerText=DATA.filter(x=>String(x.status).includes("Baru")||String(x.status).includes("Resit")).length; $("sCancel").innerText=DATA.filter(x=>String(x.status).toUpperCase().includes("CANCEL")).length; $("sPaid").innerText="RM"+DATA.filter(x=>String(x.status)==="PAID").reduce((s,x)=>s+Number(x.jumlah||0),0).toLocaleString();
+ filtered.sort((a,b)=>Number(b.row)-Number(a.row));
+ if(!filtered.length){$("tbody").innerHTML='<tr><td colspan="7"><div class="empty-state">📭 Tiada data</div></td></tr>';return;}
+ $("tbody").innerHTML=filtered.map(b=>`<tr><td data-label="Row">${b.row}</td><td data-label="Guest"><b>${esc(b.nama)}</b><div style="color:var(--text-muted);font-size:12px">${esc(b.phone)}</div></td><td data-label="Check-in">${esc(b.checkin)} → ${esc(b.checkout)}<br><small style="color:var(--text-muted)">${esc(b.malam)} malam</small></td><td data-label="RM">RM${esc(b.jumlah)}</td><td data-label="Status"><span class="badge ${statusClass(b.status)}">${esc(b.status)}</span></td><td data-label="Resit">${b.resit?`<a href="${safeUrl(b.resit)}" target="_blank" class="btn btn-resit">📎</a>`:"-"}</td><td data-label="Action"><button class="btn btn-paid" onclick="updateStatus(${b.row},'PAID')">✓</button><button class="btn btn-wa" onclick="wa(${b.row})">WA</button><button class="btn btn-delete" onclick="del(${b.row})">🗑</button></td></tr>`).join("");
 }
-
-async function updateStatus(row,status){
-  if(!row) return;
-
-  if(!confirm(`Tukar row ${row} jadi ${status}?`)) return;
-
-  try{
-    await apiPost({
-      action:"updateStatus",
-      row,
-      status
-    });
-
-    alert("Updated jadi " + status);
-    load();
-
-  }catch(e){
-    alert("Error: " + e.message);
-  }
-}
-
-async function deleteBooking(row){
-  if(!row) return;
-
-  const firstConfirm = confirm(`Delete booking row ${row}? This cannot be undone.`);
-  if(!firstConfirm) return;
-
-  const typed = prompt("Type DELETE to confirm:");
-  if(typed !== "DELETE") return;
-
-  try{
-    await apiPost({
-      action:"deleteBooking",
-      row
-    });
-
-    alert("Booking deleted.");
-    load();
-
-  }catch(e){
-    alert("Delete error: " + e.message);
-  }
-}
-
-function wa(row){
-  const b = DATA.find(x => Number(x.row) === Number(row));
-  if(!b) return;
-
-  let phone = String(b.phone || "").replace(/[^0-9]/g,"");
-
-  // Malaysia helper: if starts with 0, convert to 60
-  if(phone.startsWith("0")){
-    phone = "60" + phone.slice(1);
-  }
-
-  const msg = `Hi ${b.nama}, booking row ${b.row}.`;
-  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
-}
+async function updateStatus(row,status){if(!confirm("Tukar jadi "+status+"?"))return; await fetch(API,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({action:"updateStatus",row,status,token:TOKEN})}); load()}
+async function del(row){if(prompt("Taip DELETE")!=="DELETE")return; await fetch(API,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({action:"deleteBooking",row,token:TOKEN})}); load()}
+function wa(row){let b=DATA.find(x=>Number(x.row)===Number(row)); let p=String(b.phone).replace(/[^0-9]/g,""); if(p.startsWith("0"))p="60"+p.slice(1); window.open("https://wa.me/"+p+"?text="+encodeURIComponent(`Salam ${b.nama}, booking ${b.checkin}→${b.checkout} RM${b.jumlah} ${b.status}`),"_blank")}
+setInterval(()=>{$("clock").innerText=new Date().toLocaleTimeString("ms-MY",{hour:"2-digit",minute:"2-digit"})},1000);
+window.addEventListener("DOMContentLoaded",()=>{if(TOKEN){showApp();load()}else showLogin()});
 </script>
-
 </body>
 </html>
