@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#8b6b4a">
 <title>Choo Cottage - Booking</title>
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -22,44 +21,46 @@
   --text:#e8e8e8; --muted:#888; --brown:#c9956a; --brown-light:#2a231e; --green-bg:#1a2e1a; --green-text:#4ade80; --red-bg:#2e1a1a; --red-text:#fca5a5;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);transition:background.25s,color.25s;overscroll-behavior:none;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
-.theme-float{position:fixed;top:calc(12px + env(safe-area-inset-top));right:12px;z-index:9999;background:var(--card);border:1px solid var(--border2);width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.15);transition:all.2s}
-.theme-float:active{transform:scale(.9)}
+body{margin:0;font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);transition:all.25s;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+.theme-float{position:fixed;top:calc(12px + env(safe-area-inset-top));right:12px;z-index:9999;background:var(--card);border:1px solid var(--border2);width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.15)}
 .hero{background:linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.55)),url('choo.jpeg');background-size:cover;background-position:center;color:#fff;padding:calc(50px + env(safe-area-inset-top)) 20px 90px;text-align:center;min-height:300px;display:flex;flex-direction:column;justify-content:center;align-items:center}
 .hero h1{font-family:'Great Vibes',cursive;font-size:clamp(46px,12vw,72px);margin:0;font-weight:400}
 .hero-sub{font-size:11px;letter-spacing:3px;opacity:.8;margin-top:6px}
-.card{max-width:980px;margin:-45px auto 0;background:var(--card);border-radius:24px 24px 0 0;box-shadow:0 -8px 40px rgba(0,0,0,.1);overflow:hidden;transition:background.25s}
+.card{max-width:980px;margin:-45px auto 0;background:var(--card);border-radius:24px 24px 0 0;box-shadow:0 -8px 40px rgba(0,0,0,.1);overflow:hidden}
 @media(min-width:769px){.card{display:grid;grid-template-columns:1.1fr.9fr;border-radius:24px;margin:-45px auto 60px}}
 .left{padding:28px 20px;border-bottom:1px solid var(--border)}@media(min-width:769px){.left{padding:32px;border-bottom:none;border-right:1px solid var(--border)}}
 .panel-title{font-family:'Playfair Display',serif;font-size:22px;color:var(--brown);margin:0 0 6px}
 .panel-desc{font-size:12px;color:var(--muted);line-height:1.7;margin:0 0 16px}
-.qr-box{background:linear-gradient(135deg,var(--brown-light),var(--card));border-radius:16px;padding:18px;text-align:center;border:1px solid var(--border);margin-bottom:16px;transition:all.25s}
-.qr-title{font-size:13px;font-weight:700;color:#E4004D}.qr-name{font-size:13px;font-weight:600;margin:4px 0}.qr-bank{font-size:11px;color:var(--muted)}
-.qr-img{width:200px;margin:12px auto;border-radius:14px;display:block;border:2.5px solid #E4004D}
 .cottage-photo{width:100%;border-radius:14px;height:220px;object-fit:cover;display:block;margin-bottom:14px}
 .map-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
-.map-btn{display:flex;justify-content:center;gap:6px;text-decoration:none;background:var(--card);border:1px solid var(--border2);padding:11px;border-radius:30px;font-size:12px;font-weight:500;color:var(--text);transition:all.2s}
-.full-cal-wrap{background:var(--card2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-top:8px;transition:all.25s}
+.map-btn{display:flex;justify-content:center;gap:6px;text-decoration:none;background:var(--card);border:1px solid var(--border2);padding:11px;border-radius:30px;font-size:12px;font-weight:500;color:var(--text)}
+.full-cal-wrap{background:var(--card2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-top:8px}
 .cal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .cal-month{font-family:'Playfair Display',serif;font-size:16px;color:var(--brown);font-weight:600}
 .cal-nav{border:1px solid var(--border2);background:var(--card);width:36px;height:36px;border-radius:50%;cursor:pointer;color:var(--brown);font-size:18px}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
 .cal-day-name{font-size:9px;font-weight:700;color:var(--muted);padding:4px 0}
-.cal-day{font-size:12px;padding:8px 2px;border-radius:10px;min-height:38px;display:flex;align-items:center;justify-content:center;background:var(--card);border:1px solid var(--border);color:var(--text);cursor:pointer;transition:all.15s}
-.cal-day.booked{background:var(--red-bg);color:var(--red-text);text-decoration:line-through;border-color:var(--red-bg)}.cal-day.available{background:var(--green-bg);color:var(--green-text)}.cal-day.today{border:1.5px solid var(--brown);font-weight:700}.cal-day.selected-range{background:var(--brown);color:#fff}.cal-day.empty{background:transparent;border-color:transparent;cursor:default}
+.cal-day{font-size:12px;padding:8px 2px;border-radius:10px;min-height:38px;display:flex;align-items:center;justify-content:center;background:var(--card);border:1px solid var(--border);color:var(--text);cursor:pointer}
+.cal-day.booked{background:var(--red-bg);color:var(--red-text);text-decoration:line-through}.cal-day.available{background:var(--green-bg);color:var(--green-text)}.cal-day.today{border:1.5px solid var(--brown)}.cal-day.selected-range{background:var(--brown);color:#fff}.cal-day.empty{background:transparent;border-color:transparent;cursor:default}
 .cal-legend{display:flex;gap:12px;justify-content:center;margin-top:12px;font-size:10px;color:var(--muted)}
-.right{padding:28px 20px;background:var(--card2);transition:all.25s}
+.right{padding:28px 20px;background:var(--card2)}
 .price-rm{font-size:36px;font-weight:700;color:var(--brown)}.price-note{font-size:11px;color:var(--muted);margin:0 0 20px}
 .form-label{display:block;font-size:10px;font-weight:700;letter-spacing:1.2px;color:var(--brown);margin-bottom:6px;text-transform:uppercase}
-.form-input{width:100%;padding:14px 16px;border:1.5px solid var(--border2);border-radius:14px;font-size:16px;background:var(--card);color:var(--text);outline:none;transition:all.2s;-webkit-appearance:none}
-.form-input:focus{border-color:var(--brown);box-shadow:0 0 0 3px rgba(139,107,74,.15)}
-.total-box{background:var(--card);border-radius:14px;padding:16px;margin:4px 0 16px;border:1.5px dashed var(--brown);text-align:center;font-size:13px;color:var(--text);min-height:52px;display:flex;align-items:center;justify-content:center;transition:all.25s}
-.file-label{display:flex;justify-content:center;gap:8px;width:100%;padding:14px;border:1.5px dashed var(--brown);border-radius:14px;background:var(--card);color:var(--brown);font-size:13px;font-weight:500;cursor:pointer}
-.file-input{display:none}.file-name{font-size:11px;color:var(--muted);text-align:center;margin-top:6px;min-height:16px}
-.submit-btn{width:100%;background:var(--brown);color:#fff;border:none;padding:17px;border-radius:30px;letter-spacing:1.5px;font-size:13px;font-weight:700;cursor:pointer;margin-top:6px}
-.submit-btn:disabled{opacity:.6}.status-msg{font-size:12px;text-align:center;margin-top:12px;min-height:20px}
+.form-input{width:100%;padding:14px 16px;border:1.5px solid var(--border2);border-radius:14px;font-size:16px;background:var(--card);color:var(--text);outline:none}
+.form-input:focus{border-color:var(--brown)}
+.total-box{background:var(--card);border-radius:14px;padding:16px;margin:4px 0 16px;border:1.5px dashed var(--brown);text-align:center;font-size:13px;min-height:52px;display:flex;align-items:center;justify-content:center}
+/* QR DAH PINDAH SINI */
+.qr-box{background:linear-gradient(135deg,var(--brown-light),var(--card));border-radius:16px;padding:18px;text-align:center;border:1.5px solid var(--border2);margin:16px 0}
+.qr-title{font-size:13px;font-weight:700;color:#E4004D}
+.qr-name{font-size:13px;font-weight:600;margin:4px 0}
+.qr-bank{font-size:11px;color:var(--muted)}
+.qr-img{width:220px;max-width:100%;margin:12px auto;border-radius:14px;display:block;border:2.5px solid #E4004D}
+.qr-step{font-size:11px;color:var(--text);background:var(--card2);border-radius:20px;padding:6px 12px;display:inline-block;margin-top:8px;border:1px solid var(--border)}
+.file-label{display:flex;justify-content:center;gap:8px;width:100%;padding:14px;border:1.5px dashed var(--brown);border-radius:14px;background:var(--card);color:var(--brown);font-size:13px;font-weight:500;cursor:pointer;margin-top:12px}
+.file-input{display:none}.file-name{font-size:11px;color:var(--muted);text-align:center;margin-top:6px}
+.submit-btn{width:100%;background:var(--brown);color:#fff;border:none;padding:17px;border-radius:30px;letter-spacing:1.5px;font-size:13px;font-weight:700;cursor:pointer;margin-top:16px}
+.status-msg{font-size:12px;text-align:center;margin-top:12px;min-height:20px}
 .progress-wrap{display:none;margin-top:14px;background:var(--border);border-radius:30px;height:6px;overflow:hidden}.progress-bar{height:6px;background:var(--brown);width:0%;transition:width.4s}
-.flatpickr-calendar{background:var(--card)!important;border:1px solid var(--border)!important}.flatpickr-day{color:var(--text)!important}.flatpickr-day.selected{background:var(--brown)!important;border-color:var(--brown)!important;color:#fff!important}
 </style>
 </head>
 <body>
@@ -67,47 +68,74 @@ body{margin:0;font-family:'Poppins',sans-serif;background:var(--bg);color:var(--
 <div class="hero"><h1>Choo Cottage</h1><p class="hero-sub">Lot 1429 · Kg Sri Aman 2 · Kelantan</p></div>
 <div class="card">
   <div class="left">
-    <div class="panel-title">Booking Choo Cottage</div>
-    <p class="panel-desc">Homestay kayu 3 bilik aircond. Tekan tarikh hijau untuk terus booking.</p>
-    <div class="qr-box"><div class="qr-title">💳 DuitNow QR</div><div class="qr-name">ABDUL ALIF AFIFUDIN BIN C</div><div class="qr-bank">Maybank · **** 6789</div><img src="qr.png" class="qr-img"><div style="font-size:11px;color:var(--muted)">Scan guna MAE / Banking App</div></div>
+    <div class="panel-title">Choo Cottage</div>
+    <p class="panel-desc">Homestay kayu 3 bilik aircond, suasana kampung tenang.<br>Lihat calendar bawah untuk tarikh kosong.</p>
     <img src="choo.jpeg" class="cottage-photo" loading="lazy">
     <div class="map-row"><a class="map-btn" href="https://www.google.com/maps/place/Choo+Cottage/@5.8424217,102.3789854,1085m" target="_blank">📍 Google Maps</a><a class="map-btn" href="https://waze.com/ul/hw30c1xxgw" target="_blank">🚗 Waze</a></div>
-    <div class="full-cal-wrap"><div class="cal-header"><button class="cal-nav" id="prevM">‹</button><div class="cal-month" id="calMonth">Loading...</div><button class="cal-nav" id="nextM">›</button></div><div class="cal-grid" id="calGrid"></div><div class="cal-legend"><span>🟢 Kosong</span><span>🔴 Penuh</span></div></div>
+    <div class="full-cal-wrap"><div class="cal-header"><button class="cal-nav" id="prevM">‹</button><div class="cal-month" id="calMonth">Loading...</div><button class="cal-nav" id="nextM">›</button></div><div class="cal-grid" id="calGrid"></div><div class="cal-legend"><span>🟢 Kosong</span><span>🔴 Penuh</span><span>⬤ Hari ni</span></div></div>
   </div>
+
   <div class="right">
     <div class="price-rm">RM250</div><p class="price-note">/ malam · 3 bilik aircond</p>
     <form id="bookingForm" novalidate>
-      <div style="margin-bottom:14px"><label class="form-label">Nama Penuh</label><input class="form-input" id="nama" required></div>
-      <div style="margin-bottom:14px"><label class="form-label">No WhatsApp</label><input class="form-input" id="phone" type="tel" required></div>
-      <div style="margin-bottom:14px"><label class="form-label">Email</label><input class="form-input" id="email" type="email" required></div>
-      <div style="margin-bottom:14px"><label class="form-label">Check-in</label><input class="form-input" id="checkin" readonly required></div>
-      <div style="margin-bottom:14px"><label class="form-label">Check-out</label><input class="form-input" id="checkout" readonly required></div>
+      <div style="margin-bottom:14px"><label class="form-label">Nama Penuh</label><input class="form-input" id="nama" placeholder="Ali bin Abu" required></div>
+      <div style="margin-bottom:14px"><label class="form-label">No WhatsApp</label><input class="form-input" id="phone" type="tel" placeholder="0123456789" required></div>
+      <div style="margin-bottom:14px"><label class="form-label">Email</label><input class="form-input" id="email" type="email" placeholder="ali@gmail.com" required></div>
+      <div style="margin-bottom:14px"><label class="form-label">Check-in</label><input class="form-input" id="checkin" readonly placeholder="Pilih tarikh" required></div>
+      <div style="margin-bottom:14px"><label class="form-label">Check-out</label><input class="form-input" id="checkout" readonly placeholder="Pilih tarikh" required></div>
       <div class="total-box" id="totalBox">Pilih tarikh untuk kira total</div>
-      <div style="margin-bottom:14px"><label class="form-label">Resit Bayaran</label><label class="file-label" for="resit">📎 Upload Resit</label><input class="file-input" id="resit" type="file" accept="image/*" required><div class="file-name" id="fileName">Auto compress</div></div>
+
+      <!-- QR SEKARANG KAT SINI - SEBELUM UPLOAD -->
+      <div class="qr-box">
+        <div class="qr-title">💳 Langkah 1: Scan & Bayar</div>
+        <div class="qr-name">ABDUL ALIF AFIFUDIN BIN C</div>
+        <div class="qr-bank">Maybank · **** 6789</div>
+        <img src="qr.png" class="qr-img" alt="DuitNow QR">
+        <div class="qr-step">📱 Buka MAE / Banking App → Scan QR → Bayar</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:8px" id="qrTotal">Jumlah bayaran akan keluar selepas pilih tarikh</div>
+      </div>
+
+      <div style="margin-bottom:14px">
+        <label class="form-label">Langkah 2: Upload Resit (Wajib)</label>
+        <label class="file-label" for="resit">📎 Upload Resit / Screenshot Bayaran</label>
+        <input class="file-input" id="resit" type="file" accept="image/*" required>
+        <div class="file-name" id="fileName">Tiada fail dipilih - auto compress</div>
+      </div>
+
       <div class="progress-wrap" id="progressWrap"><div class="progress-bar" id="progressBar"></div></div>
       <button class="submit-btn" id="btnBook" type="submit">HANTAR BOOKING + RESIT</button>
       <p class="status-msg" id="status"></p>
     </form>
   </div>
 </div>
+
 <script>
 const savedTheme=localStorage.getItem('cc_theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
 document.documentElement.setAttribute('data-theme',savedTheme);
-function updateIcon(){document.getElementById('themeBtn').innerText=document.documentElement.getAttribute('data-theme')==='light'?'🌙':'☀️'; document.querySelector('meta[name="theme-color"]').setAttribute('content', document.documentElement.getAttribute('data-theme')==='light'?'#8b6b4a':'#121212')}
+function updateIcon(){document.getElementById('themeBtn').innerText=document.documentElement.getAttribute('data-theme')==='light'?'🌙':'☀️'}
 function toggleTheme(){let cur=document.documentElement.getAttribute('data-theme');let nxt=cur==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',nxt);localStorage.setItem('cc_theme',nxt);updateIcon()}updateIcon();
 
 const PRICE=250, SCRIPT_URL="https://script.google.com/macros/s/AKfycbxZ8ON5LoVOKEZ-phssVnabedkiCKMC-U83KszL3SSmVxd4t9VNI80VpHTgp3SNKbYk6g/exec";
 let fpIn,fpOut,bookedSet=new Set(),curDate=new Date(),selectedRange=[];
 async function loadBooked(){try{let r=await fetch(SCRIPT_URL+"?action=bookings",{cache:"no-store"});let d=await r.json();let dis=[];d.forEach(b=>{if(!b.checkin||!b.checkout)return;let s=new Date(b.checkin),e=new Date(b.checkout);for(let x=new Date(s);x<e;x.setDate(x.getDate()+1)){let iso=x.toISOString().split('T')[0];dis.push(iso);bookedSet.add(iso)}});initCal(dis);renderCal(curDate.getFullYear(),curDate.getMonth())}catch(e){initCal([]);renderCal(curDate.getFullYear(),curDate.getMonth())}}
 function initCal(dis){fpIn=flatpickr("#checkin",{minDate:"today",disable:dis,dateFormat:"Y-m-d",disableMobile:true,onChange:s=>{if(s[0]){fpOut.set('minDate',new Date(s[0].getTime()+86400000));calc();updateRange()}}});fpOut=flatpickr("#checkout",{minDate:"today",disable:dis,dateFormat:"Y-m-d",disableMobile:true,onChange:()=>{calc();updateRange()}})}
-function calc(){let cin=document.getElementById('checkin').value,cout=document.getElementById('checkout').value,box=document.getElementById('totalBox');if(!cin||!cout){box.innerHTML="Pilih tarikh untuk kira total";return}let diff=Math.ceil((new Date(cout)-new Date(cin))/86400000);if(diff<=0){box.innerHTML="⚠️ Check-out mesti selepas Check-in";delete box.dataset.malam;return}box.innerHTML=diff+' malam × RM'+PRICE+' = <b style="color:var(--brown);font-size:18px">RM'+(diff*PRICE)+'</b>';box.dataset.malam=diff;box.dataset.jumlah=diff*PRICE}
-function updateRange(){let cin=document.getElementById('checkin').value,cout=document.getElementById('checkout').value;selectedRange=[];if(cin&&cout){let s=new Date(cin),e=new Date(cout);for(let x=new Date(s);x<e;x.setDate(x.getDate()+1))selectedRange.push(x.toISOString().split('T')[0])}renderCal(curDate.getFullYear(),curDate.getMonth())}
-function renderCal(y,m){let grid=document.getElementById('calGrid'),label=document.getElementById('calMonth');let names=["Januari","Februari","Mac","April","Mei","Jun","Julai","Ogos","September","Oktober","November","Disember"];label.textContent=names[m]+" "+y;grid.innerHTML="";["AH","IS","SE","RA","KH","JU","SA"].forEach(d=>{let el=document.createElement('div');el.className="cal-day-name";el.textContent=d;grid.appendChild(el)});let first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate(),today=new Date().toISOString().split('T')[0];for(let i=0;i<first;i++){let e=document.createElement('div');e.className="cal-day empty";grid.appendChild(e)}for(let d=1;d<=days;d++){let iso=new Date(y,m,d).toISOString().split('T')[0],el=document.createElement('div');let booked=bookedSet.has(iso),isToday=iso===today,isSel=selectedRange.includes(iso);el.className="cal-day "+(isSel?"selected-range":(booked?"booked":(isToday?"today":"available")));el.textContent=d;if(!booked){el.onclick=()=>{if(!document.getElementById('checkin').value||(document.getElementById('checkin').value&&document.getElementById('checkout').value)){document.getElementById('checkin').value=iso;fpIn.setDate(iso,true);document.getElementById('checkout').value="";selectedRange=[];renderCal(y,m)}else{if(new Date(iso)<=new Date(document.getElementById('checkin').value)){alert("Check-out mesti selepas check-in");return}document.getElementById('checkout').value=iso;fpOut.setDate(iso,true);calc();updateRange()}};}grid.appendChild(el)}}
-document.getElementById('prevM').onclick=()=>{curDate.setMonth(curDate.getMonth()-1);renderCal(curDate.getFullYear(),curDate.getMonth())};document.getElementById('nextM').onclick=()=>{curDate.setMonth(curDate.getMonth()+1);renderCal(curDate.getFullYear(),curDate.getMonth())};
+function calc(){
+  let cin=checkin.value,cout=checkout.value,box=document.getElementById('totalBox'),qrTot=document.getElementById('qrTotal');
+  if(!cin||!cout){box.innerHTML="Pilih tarikh untuk kira total";qrTot.innerText="Jumlah bayaran akan keluar selepas pilih tarikh";return}
+  let diff=Math.ceil((new Date(cout)-new Date(cin))/86400000);
+  if(diff<=0){box.innerHTML="⚠️ Check-out mesti selepas Check-in";delete box.dataset.malam;return}
+  let tot=diff*PRICE;
+  box.innerHTML=diff+' malam × RM'+PRICE+' = <b style="color:var(--brown);font-size:18px">RM'+tot+'</b>';
+  qrTot.innerHTML='💰 Sila bayar <b style="color:#E4004D">RM'+tot+'</b> untuk '+diff+' malam';
+  box.dataset.malam=diff;box.dataset.jumlah=tot;
+}
+function updateRange(){let cin=checkin.value,cout=checkout.value;selectedRange=[];if(cin&&cout){let s=new Date(cin),e=new Date(cout);for(let x=new Date(s);x<e;x.setDate(x.getDate()+1))selectedRange.push(x.toISOString().split('T')[0])}renderCal(curDate.getFullYear(),curDate.getMonth())}
+function renderCal(y,m){let grid=document.getElementById('calGrid'),label=document.getElementById('calMonth');let names=["Januari","Februari","Mac","April","Mei","Jun","Julai","Ogos","September","Oktober","November","Disember"];label.textContent=names[m]+" "+y;grid.innerHTML="";["AH","IS","SE","RA","KH","JU","SA"].forEach(d=>{let el=document.createElement('div');el.className="cal-day-name";el.textContent=d;grid.appendChild(el)});let first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate(),today=new Date().toISOString().split('T')[0];for(let i=0;i<first;i++){let e=document.createElement('div');e.className="cal-day empty";grid.appendChild(e)}for(let d=1;d<=days;d++){let iso=new Date(y,m,d).toISOString().split('T')[0],el=document.createElement('div');let booked=bookedSet.has(iso),isToday=iso===today,isSel=selectedRange.includes(iso);el.className="cal-day "+(isSel?"selected-range":(booked?"booked":(isToday?"today":"available")));el.textContent=d;if(!booked){el.onclick=()=>{if(!checkin.value||(checkin.value&&checkout.value)){checkin.value=iso;fpIn.setDate(iso,true);checkout.value="";selectedRange=[];renderCal(y,m)}else{if(new Date(iso)<=new Date(checkin.value)){alert("Check-out mesti selepas check-in");return}checkout.value=iso;fpOut.setDate(iso,true);calc();updateRange()}};}grid.appendChild(el)}}
+prevM.onclick=()=>{curDate.setMonth(curDate.getMonth()-1);renderCal(curDate.getFullYear(),curDate.getMonth())};nextM.onclick=()=>{curDate.setMonth(curDate.getMonth()+1);renderCal(curDate.getFullYear(),curDate.getMonth())};
 function compressImage(f){return new Promise(r=>{let img=new Image(),rd=new FileReader();rd.onload=e=>{img.src=e.target.result};img.onload=()=>{let c=document.createElement('canvas'),maxW=1280,ratio=img.width>maxW?maxW/img.width:1;c.width=img.width*ratio;c.height=img.height*ratio;c.getContext('2d').drawImage(img,0,0,c.width,c.height);c.toBlob(b=>r(b),'image/jpeg',0.72)};rd.readAsDataURL(f)})}
-document.getElementById('resit').addEventListener('change',async function(){let f=this.files[0];if(!f)return;document.getElementById('fileName').innerText="Compressing...";let comp=await compressImage(f);let dt=new DataTransfer();dt.items.add(new File([comp],f.name.replace(/\.\w+$/,'')+'.jpg',{type:'image/jpeg'}));this.files=dt.files;document.getElementById('fileName').innerText="✅ "+(comp.size/1024).toFixed(0)+"KB"});
+resit.addEventListener('change',async function(){let f=this.files[0];if(!f)return;fileName.innerText="Compressing...";let comp=await compressImage(f);let dt=new DataTransfer();dt.items.add(new File([comp],f.name.replace(/\.\w+$/,'')+'.jpg',{type:'image/jpeg'}));this.files=dt.files;fileName.innerText="✅ "+(comp.size/1024).toFixed(0)+"KB - "+dt.files[0].name});
 function toBase64(f){return new Promise((res,rej)=>{let r=new FileReader();r.readAsDataURL(f);r.onload=()=>res(r.result);r.onerror=rej})}
-document.getElementById('bookingForm').addEventListener('submit',async e=>{e.preventDefault();let btn=document.getElementById('btnBook'),st=document.getElementById('status'),box=document.getElementById('totalBox'),pw=document.getElementById('progressWrap'),bar=document.getElementById('progressBar'),file=document.getElementById('resit').files[0];if(!box.dataset.malam){st.innerHTML="❌ Pilih tarikh dulu";return}if(!file){st.innerHTML="❌ Upload resit";return}btn.disabled=true;btn.textContent="UPLOADING...";st.innerHTML="⏳ Simpan...";pw.style.display="block";bar.style.width="20%";try{let b64=await toBase64(file);bar.style.width="50%";let payload={nama:nama.value,phone:phone.value,email:email.value,checkin:checkin.value,checkout:checkout.value,malam:box.dataset.malam,jumlah:box.dataset.jumlah,resitBase64:b64.split(',')[1],resitType:file.type,resitName:file.name};let res=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)});bar.style.width="85%";let j=JSON.parse(await res.text());bar.style.width="100%";if(j.status==="ok"||j.ok){st.innerHTML="✅ Berjaya!";btn.textContent="✅ BERJAYA!";setTimeout(()=>{window.location.href="https://api.whatsapp.com/send?phone=60189424611&text="+encodeURIComponent("Salam Choo Cottage, saya "+payload.nama+" booking "+payload.checkin+" hingga "+payload.checkout+" RM"+payload.jumlah)},1500)}else throw new Error(j.message)}catch(err){pw.style.display="none";st.innerHTML="❌ "+err.message;btn.disabled=false;btn.textContent="HANTAR BOOKING + RESIT"}});
+bookingForm.addEventListener('submit',async e=>{e.preventDefault();let box=document.getElementById('totalBox'),file=resit.files[0];if(!box.dataset.malam){status.innerHTML="❌ Pilih tarikh dulu";return}if(!file){status.innerHTML="❌ Upload resit dulu";return}btnBook.disabled=true;btnBook.textContent="UPLOADING...";status.innerHTML="⏳ Simpan...";progressWrap.style.display="block";progressBar.style.width="20%";try{let b64=await toBase64(file);progressBar.style.width="50%";let payload={nama:nama.value,phone:phone.value,email:email.value,checkin:checkin.value,checkout:checkout.value,malam:box.dataset.malam,jumlah:box.dataset.jumlah,resitBase64:b64.split(',')[1],resitType:file.type,resitName:file.name};let res=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)});progressBar.style.width="85%";let j=JSON.parse(await res.text());progressBar.style.width="100%";if(j.status==="ok"||j.ok){status.innerHTML="✅ Berjaya!";btnBook.textContent="✅ BERJAYA!";setTimeout(()=>{window.location.href="https://api.whatsapp.com/send?phone=60189424611&text="+encodeURIComponent("Salam Choo Cottage, saya "+payload.nama+" booking "+payload.checkin+" hingga "+payload.checkout+" RM"+payload.jumlah+" Resit uploaded.")},1500)}else throw new Error(j.message)}catch(err){progressWrap.style.display="none";status.innerHTML="❌ "+err.message;btnBook.disabled=false;btnBook.textContent="HANTAR BOOKING + RESIT"}});
 loadBooked();
 if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}
 </script>
