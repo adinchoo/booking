@@ -115,7 +115,7 @@ document.documentElement.setAttribute('data-theme',savedTheme);
 function updateIcon(){document.getElementById('themeBtn').innerText=document.documentElement.getAttribute('data-theme')==='light'?'🌙':'☀️'}
 function toggleTheme(){let cur=document.documentElement.getAttribute('data-theme');let nxt=cur==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',nxt);localStorage.setItem('cc_theme',nxt);updateIcon()}updateIcon();
 
-const PRICE=250, SCRIPT_URL="https://script.google.com/macros/s/AKfycbxZ8ON5LoVOKEZ-phssVnabedkiCKMC-U83KszL3SSmVxd4t9VNI80VpHTgp3SNKbYk6g/exec";
+const PRICE=250, SCRIPT_URL="https://script.google.com/macros/s/AKfycbwJ140Nh9wbVnqaqKHDyQZZWS5kJNiCYj0plJvlgW7PVZuMp-6ucVkv5v1WnuECQLVT/exec";
 let fpIn,fpOut,bookedSet=new Set(),curDate=new Date(),selectedRange=[];
 async function loadBooked(){try{let r=await fetch(SCRIPT_URL+"?action=bookings",{cache:"no-store"});let d=await r.json();let dis=[];d.forEach(b=>{if(!b.checkin||!b.checkout)return;let s=new Date(b.checkin),e=new Date(b.checkout);for(let x=new Date(s);x<e;x.setDate(x.getDate()+1)){let iso=x.toISOString().split('T')[0];dis.push(iso);bookedSet.add(iso)}});initCal(dis);renderCal(curDate.getFullYear(),curDate.getMonth())}catch(e){initCal([]);renderCal(curDate.getFullYear(),curDate.getMonth())}}
 function initCal(dis){fpIn=flatpickr("#checkin",{minDate:"today",disable:dis,dateFormat:"Y-m-d",disableMobile:true,onChange:s=>{if(s[0]){fpOut.set('minDate',new Date(s[0].getTime()+86400000));calc();updateRange()}}});fpOut=flatpickr("#checkout",{minDate:"today",disable:dis,dateFormat:"Y-m-d",disableMobile:true,onChange:()=>{calc();updateRange()}})}

@@ -99,7 +99,7 @@ document.documentElement.setAttribute('data-theme',savedTheme);
 function updateIcon(){document.getElementById('themeBtn').innerText=document.documentElement.getAttribute('data-theme')==='light'?'🌙':'☀️'}
 function toggleTheme(){let cur=document.documentElement.getAttribute('data-theme');let nxt=cur==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',nxt);localStorage.setItem('cc_theme',nxt);updateIcon()}updateIcon();
 
-const API="https://script.google.com/macros/s/AKfycbxZ8ON5LoVOKEZ-phssVnabedkiCKMC-U83KszL3SSmVxd4t9VNI80VpHTgp3SNKbYk6g/exec";
+const API="https://script.google.com/macros/s/AKfycbwJ140Nh9wbVnqaqKHDyQZZWS5kJNiCYj0plJvlgW7PVZuMp-6ucVkv5v1WnuECQLVT/exec";
 const TOKEN_KEY="cc_admin_token";
 let DATA=[],TOKEN=localStorage.getItem(TOKEN_KEY)||"",curDate=new Date(),bookedMap={};
 const $=id=>document.getElementById(id);
