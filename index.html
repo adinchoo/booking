@@ -141,11 +141,11 @@ async function loadBooked(){
     data.forEach(b => {
       if(!b.checkin || !b.checkout) return;
 
-      let s = new Date(b.checkin);
-      let e = new Date(b.checkout);
+      let s = parseDateLocal(b.checkin);
+      let e = parseDateLocal(b.checkout);
 
       for(let x = new Date(s); x < e; x.setDate(x.getDate() + 1)){
-        let iso = x.toISOString().split("T")[0];
+        let iso = toISODateLocal(x);
         dis.push(iso);
         bookedSet.add(iso);
       }
@@ -234,11 +234,24 @@ bookingForm.addEventListener("submit", async e => {
       email: email.value.trim(),
       checkin: checkin.value,
       checkout: checkout.value,
+      malam: Number(box.dataset.malam),
+      jumlah: Number(box.dataset.jumlah),
       price_per_night: PRICE,
       status: "Resit Uploaded - Check!",
       resit_path: receiptPath
     };
 
+    function toISODateLocal(date){
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function parseDateLocal(str){
+      const [y,m,d] = String(str).split("-").map(Number);
+      return new Date(y, m - 1, d);
+    }
     const { error: insertError } = await supabaseClient
       .from("bookings")
       .insert(payload);
