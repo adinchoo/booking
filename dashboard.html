@@ -6,9 +6,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0f0f0f">
 <title>Choo Cottage - Dashboard</title>
+
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 :root{--brown:#c9956a;--bg:#0f0f0f;--surface:#1a1a1a;--surface2:#222;--surface3:#2a2a2a;--border:#333;--text:#e8e8e8;--muted:#888;--green:#166534;--green-text:#4ade80;--yellow:#854d0e;--yellow-text:#fde047;--red:#7f1d1d;--red-text:#fca5a5;--blue:#1e3a5f;--blue-text:#7dd3fc}
 [data-theme="light"]{--bg:#fdfbf7;--surface:#fff;--surface2:#faf6f1;--surface3:#f3ede4;--border:#e8ddd0;--text:#3a2e26;--muted:#9a8a7a;--green:#dcfce7;--green-text:#166534;--yellow:#fef9c3;--yellow-text:#854d0e;--red:#fee2e2;--red-text:#991b1b;--blue:#dbeafe;--blue-text:#1e3a8a}
@@ -23,144 +26,532 @@ body{font-family:Poppins,sans-serif;background:var(--bg);color:var(--text);min-h
 .logout-btn{background:var(--surface3);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:6px 12px;cursor:pointer;font-size:11px}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px}
 .stat{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;text-align:center}
-.stat b{font-size:20px;display:block;color:var(--brown)}.stat small{color:var(--muted);font-size:10px}
+.stat b{font-size:20px;display:block;color:var(--brown)}
+.stat small{color:var(--muted);font-size:10px}
 .cal-wrap{background:var(--surface);margin:0 14px 12px;border:1px solid var(--border);border-radius:14px;padding:12px}
-.cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.cal-month{font-weight:600;color:var(--brown);font-size:14px}
+.cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.cal-month{font-weight:600;color:var(--brown);font-size:14px}
 .cal-nav{background:var(--surface2);border:1px solid var(--border);color:var(--text);width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:18px}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.cal-dn{font-size:9px;font-weight:600;color:var(--muted);text-align:center;padding:4px 0}
-.cal-d{border:1px solid var(--border);border-radius:10px;min-height:54px;padding:4px;background:var(--surface2);cursor:pointer}.cal-d.booked{background:var(--red)}.cal-d.empty{background:transparent;border-color:transparent;cursor:default}.cal-badge{font-size:8px;padding:1px 4px;border-radius:10px;margin-top:2px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.b-paid{background:var(--green);color:var(--green-text)}.b-baru{background:var(--yellow);color:var(--yellow-text)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-dn{font-size:9px;font-weight:600;color:var(--muted);text-align:center;padding:4px 0}
+.cal-d{border:1px solid var(--border);border-radius:10px;min-height:54px;padding:4px;background:var(--surface2);cursor:pointer}
+.cal-d.booked{background:var(--red)}
+.cal-d.empty{background:transparent;border-color:transparent;cursor:default}
+.cal-badge{font-size:8px;padding:1px 4px;border-radius:10px;margin-top:2px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.b-paid{background:var(--green);color:var(--green-text)}
+.b-baru{background:var(--yellow);color:var(--yellow-text)}
 .filters{background:var(--surface);margin:0 14px 12px;padding:10px;border-radius:12px;border:1px solid var(--border);display:flex;gap:6px;flex-wrap:wrap}
 input,select{padding:10px;border:1px solid var(--border);border-radius:10px;font-size:16px;background:var(--surface2);color:var(--text);flex:1;min-width:0}
 .refresh-btn{background:var(--brown);color:#fff;border:none;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:12px;font-weight:500}
 .table-wrap{margin:0 14px 20px;background:var(--surface);border-radius:14px;overflow:auto;border:1px solid var(--border);-webkit-overflow-scrolling:touch}
-table{width:100%;border-collapse:collapse;min-width:800px}
+table{width:100%;border-collapse:collapse;min-width:850px}
 th{background:var(--surface2);text-align:left;padding:12px;font-size:10px;color:var(--brown);border-bottom:1px solid var(--border);text-transform:uppercase;white-space:nowrap}
 td{padding:12px;border-top:1px solid var(--border);font-size:13px;color:var(--text);vertical-align:top;max-width:180px;word-break:break-word}
-.badge{padding:3px 8px;border-radius:20px;font-size:10px;font-weight:600;display:inline-block;white-space:nowrap;max-width:120px;overflow:hidden;text-overflow:ellipsis}
-.badge-paid{background:var(--green);color:var(--green-text)}.badge-baru{background:var(--red);color:var(--red-text)}.badge-resit{background:var(--yellow);color:var(--yellow-text)}.badge-cancel{background:var(--surface3);color:var(--muted)}
+.badge{padding:3px 8px;border-radius:20px;font-size:10px;font-weight:600;display:inline-block;white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis}
+.badge-paid{background:var(--green);color:var(--green-text)}
+.badge-baru{background:var(--red);color:var(--red-text)}
+.badge-resit{background:var(--yellow);color:var(--yellow-text)}
+.badge-cancel{background:var(--surface3);color:var(--muted)}
 .btn{border:none;padding:6px 10px;border-radius:20px;cursor:pointer;font-size:10px;margin:2px;white-space:nowrap}
-.btn-paid{background:var(--brown);color:#fff}.btn-wa{background:var(--blue);color:var(--blue-text)}.btn-delete{background:var(--red);color:var(--red-text)}.btn-resit{background:var(--surface3);color:var(--text);border:1px solid var(--border);text-decoration:none;display:inline-block}
+.btn-paid{background:var(--brown);color:#fff}
+.btn-wa{background:var(--blue);color:var(--blue-text)}
+.btn-delete{background:var(--red);color:var(--red-text)}
+.btn-cancel{background:var(--surface3);color:var(--text);border:1px solid var(--border)}
+.btn-resit{background:var(--surface3);color:var(--text);border:1px solid var(--border);text-decoration:none;display:inline-block}
+.action-box{display:flex;gap:4px;flex-wrap:wrap}
 
-/* ===== MOBILE FIX - KEMAS TAK MEMANJANG ===== */
 @media(max-width:768px){
- .stats{grid-template-columns:1fr 1fr;padding:10px;gap:8px}
- .filters{margin:0 10px 10px;padding:8px}
- .filters input,.filters select{width:100%;font-size:16px}
- .table-wrap{margin:0 10px 20px;background:transparent;border:none;overflow:visible}
-  table,thead,tbody,tr{display:block;width:100%}
-  table{min-width:0}
-  thead{display:none}
-  tr{background:var(--surface);margin-bottom:12px;border-radius:16px;border:1px solid var(--border);overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.1)}
-  td{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:10px 14px;border-top:1px solid var(--border);max-width:none;text-align:right;font-size:13px}
-  td::before{content:attr(data-label);font-weight:600;color:var(--brown);text-align:left;min-width:80px;max-width:90px;font-size:10px;text-transform:uppercase;flex-shrink:0;padding-top:2px;line-height:1.3}
-  td:first-child{border-top:none;background:var(--surface2)}
-
-  /* Guest column - handle panjang */
-  td[data-label="Guest"]{flex-direction:column;align-items:stretch;text-align:left}
-  td[data-label="Guest"]::before{display:none}
- .guest-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
- .guest-name{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:65%}
- .guest-row{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:100%;line-height:1.4}
- .guest-email{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
-
-  /* Dates - tak memanjang */
-  td[data-label="Check-in/Out"]{font-size:12px}
-  td[data-label="Check-in/Out"] span{white-space:nowrap}
-
-  /* Badge potong kalau panjang */
-  td[data-label="Status"]{justify-content:space-between}
-  td[data-label="Status"].badge{max-width:140px}
-
-  /* Action jadi scroll horizontal */
-  td[data-label="Action"]{padding:8px 10px}
-  td[data-label="Action"]::before{display:none}
- .action-box{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;width:100%;flex-wrap:nowrap}
- .action-box::-webkit-scrollbar{display:none}
- .btn{flex-shrink:0;padding:8px 14px}
+.stats{grid-template-columns:1fr 1fr;padding:10px;gap:8px}
+.filters{margin:0 10px 10px;padding:8px}
+.filters input,.filters select{width:100%;font-size:16px}
+.table-wrap{margin:0 10px 20px;background:transparent;border:none;overflow:visible}
+table,thead,tbody,tr{display:block;width:100%}
+table{min-width:0}
+thead{display:none}
+tr{background:var(--surface);margin-bottom:12px;border-radius:16px;border:1px solid var(--border);overflow:hidden}
+td{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:10px 14px;border-top:1px solid var(--border);max-width:none;text-align:right;font-size:13px}
+td::before{content:attr(data-label);font-weight:600;color:var(--brown);text-align:left;min-width:80px;max-width:90px;font-size:10px;text-transform:uppercase;flex-shrink:0;padding-top:2px;line-height:1.3}
+td:first-child{border-top:none;background:var(--surface2)}
+td[data-label="Guest"]{flex-direction:column;align-items:stretch;text-align:left}
+td[data-label="Guest"]::before{display:none}
+.guest-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.guest-name{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:65%}
+.guest-row,.guest-email{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:100%;line-height:1.4}
+td[data-label="Action"]{padding:8px 10px}
+td[data-label="Action"]::before{display:none}
+.action-box{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;width:100%;flex-wrap:nowrap}
+.action-box::-webkit-scrollbar{display:none}
+.btn{flex-shrink:0;padding:8px 14px}
 }
 .login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .login-card{background:var(--surface);width:100%;max-width:360px;border-radius:20px;padding:28px;border:1px solid var(--border)}
-.login-card h2{color:var(--brown);text-align:center;font-size:18px}.login-card p{color:var(--muted);text-align:center;margin-bottom:16px;font-size:12px}
-.login-card input{width:100%;margin-bottom:10px}.login-card button{width:100%;background:var(--brown);color:#fff;border:none;border-radius:12px;padding:12px;font-weight:600;cursor:pointer}
+.login-card h2{color:var(--brown);text-align:center;font-size:18px}
+.login-card p{color:var(--muted);text-align:center;margin-bottom:16px;font-size:12px}
+.login-card input{width:100%;margin-bottom:10px}
+.login-card button{width:100%;background:var(--brown);color:#fff;border:none;border-radius:12px;padding:12px;font-weight:600;cursor:pointer}
+.login-note{font-size:10px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5}
 </style>
 </head>
+
 <body>
-<div id="loginScreen" class="login-screen"><div class="login-card"><h2>🏡 Choo Cottage</h2><p>Admin Dashboard</p><input id="passwordInput" type="password" placeholder="Password" onkeydown="if(event.key==='Enter') login()"><button onclick="login()">LOGIN</button><div id="loginMsg" style="color:var(--red-text);font-size:11px;text-align:center;margin-top:8px"></div></div></div>
-<div id="app" class="hidden">
-  <div class="header"><div class="header-title">🏡 Admin <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button></div><div class="header-right"><span id="clock"></span><a href="index.html">Booking</a><button class="logout-btn" onclick="logout()">Logout</button></div></div>
-  <div class="stats"><div class="stat"><b id="sTotal">0</b><small>Total</small></div><div class="stat"><b id="sPaid">RM0</b><small>PAID</small></div><div class="stat"><b id="sPending">0</b><small>Pending</small></div><div class="stat"><b id="sCancel">0</b><small>Cancel</small></div></div>
-  <div class="cal-wrap"><div class="cal-head"><button class="cal-nav" id="prevM">‹</button><div class="cal-month" id="calMonth"></div><button class="cal-nav" id="nextM">›</button></div><div class="cal-grid" id="calGrid"></div></div>
-  <div class="filters"><input id="q" type="text" placeholder="Cari nama/phone" onkeyup="render()"><select id="fStatus" onchange="render()"><option value="">Semua</option><option>Baru</option><option>Resit Uploaded - Check!</option><option>PAID</option><option>CANCEL</option></select><input type="date" id="fDate" onchange="render()"><button class="refresh-btn" onclick="load()">🔄</button><button class="refresh-btn" style="background:var(--surface3);color:var(--text)" onclick="clearFilter()">Clear</button></div>
-  <div class="table-wrap"><table><thead><tr><th>Row</th><th>Guest</th><th>Check-in/Out</th><th>RM</th><th>Status</th><th>Resit</th><th>Action</th></tr></thead><tbody id="tbody"></tbody></table></div>
+
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <h2>🏡 Choo Cottage</h2>
+    <p>Admin Dashboard</p>
+    <input id="emailInput" type="email" placeholder="Admin email">
+    <input id="passwordInput" type="password" placeholder="Password" onkeydown="if(event.key==='Enter') login()">
+    <button onclick="login()">LOGIN</button>
+    <div id="loginMsg" style="color:var(--red-text);font-size:11px;text-align:center;margin-top:8px"></div>
+    <div class="login-note">Use your Supabase Auth admin email and password.</div>
+  </div>
 </div>
+
+<div id="app" class="hidden">
+  <div class="header">
+    <div class="header-title">
+      🏡 Admin
+      <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+    </div>
+    <div class="header-right">
+      <span id="clock"></span>
+      <a href="index.html">Booking</a>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b id="sTotal">0</b><small>Total</small></div>
+    <div class="stat"><b id="sPaid">RM0</b><small>PAID</small></div>
+    <div class="stat"><b id="sPending">0</b><small>Pending</small></div>
+    <div class="stat"><b id="sCancel">0</b><small>Cancel</small></div>
+  </div>
+
+  <div class="cal-wrap">
+    <div class="cal-head">
+      <button class="cal-nav" id="prevM">‹</button>
+      <div class="cal-month" id="calMonth"></div>
+      <button class="cal-nav" id="nextM">›</button>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+  </div>
+
+  <div class="filters">
+    <input id="q" type="text" placeholder="Cari nama/phone/email" onkeyup="render()">
+    <select id="fStatus" onchange="render()">
+      <option value="">Semua</option>
+      <option value="Baru">Baru</option>
+      <option value="Resit Uploaded - Check!">Resit Uploaded - Check!</option>
+      <option value="PAID">PAID</option>
+      <option value="CANCEL">CANCEL</option>
+    </select>
+    <input type="date" id="fDate" onchange="render()">
+    <button class="refresh-btn" onclick="load()">🔄</button>
+    <button class="refresh-btn" style="background:var(--surface3);color:var(--text)" onclick="clearFilter()">Clear</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Guest</th>
+          <th>Check-in/Out</th>
+          <th>RM</th>
+          <th>Status</th>
+          <th>Resit</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</div>
+
 <script>
-const savedTheme=localStorage.getItem('cc_theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
-document.documentElement.setAttribute('data-theme',savedTheme);
-function updateIcon(){document.getElementById('themeBtn').innerText=document.documentElement.getAttribute('data-theme')==='light'?'🌙':'☀️'}
-function toggleTheme(){let cur=document.documentElement.getAttribute('data-theme');let nxt=cur==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',nxt);localStorage.setItem('cc_theme',nxt);updateIcon()}updateIcon();
+const $ = id => document.getElementById(id);
 
-const API="https://script.google.com/macros/s/AKfycbwJ140Nh9wbVnqaqKHDyQZZWS5kJNiCYj0plJvlgW7PVZuMp-6ucVkv5v1WnuECQLVT/exec";
-const TOKEN_KEY="cc_admin_token";
-let DATA=[],TOKEN=localStorage.getItem(TOKEN_KEY)||"",curDate=new Date(),bookedMap={};
-const $=id=>document.getElementById(id);
-function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
-function safeUrl(u){return /^https?:\/\//i.test(String(u||"").trim())?u:"#";}
-function statusClass(s){s=String(s||"").toUpperCase();if(s==="PAID")return"badge-paid";if(s==="CANCEL")return"badge-cancel";if(s.includes("RESIT"))return"badge-resit";return"badge-baru"}
-function showApp(){$("loginScreen").classList.add("hidden");$("app").classList.remove("hidden")}
-function showLogin(){$("app").classList.add("hidden");$("loginScreen").classList.remove("hidden")}
-async function login(){let pw=$("passwordInput").value.trim();try{let r=await fetch(API,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({action:"login",password:pw})});let j=JSON.parse(await r.text());if(!j.ok){$("loginMsg").innerText=j.message;return}TOKEN=j.token;localStorage.setItem(TOKEN_KEY,TOKEN);showApp();load()}catch(e){$("loginMsg").innerText=e.message}}
-function logout(){TOKEN="";localStorage.removeItem(TOKEN_KEY);showLogin()}
+const SUPABASE_URL = "https://ynxvbbqmkkkrnfwpegqk.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlueHZiYnFta2trcm5md3BlZ3FrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAyNzgyODcsImV4cCI6MjEwNTg1NDI4N30.MYAbDCjvyTdS9pZjxHkOetWVH4cV9eENCD_TwhFIZIY";
+
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let DATA = [];
+let curDate = new Date();
+let bookedMap = {};
+
+const savedTheme = localStorage.getItem("cc_theme") || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+document.documentElement.setAttribute("data-theme", savedTheme);
+
+function updateIcon(){
+  const btn = $("themeBtn");
+  if(btn) btn.innerText = document.documentElement.getAttribute("data-theme") === "light" ? "🌙" : "☀️";
+}
+
+function toggleTheme(){
+  const cur = document.documentElement.getAttribute("data-theme");
+  const nxt = cur === "light" ? "dark" : "light";
+  document.documentElement.setAttribute("data-theme", nxt);
+  localStorage.setItem("cc_theme", nxt);
+  updateIcon();
+}
+
+function esc(v){
+  return String(v ?? "").replace(/[&<>"']/g, m => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
+  }[m]));
+}
+
+function toISODateLocal(date){
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+function parseDateLocal(str){
+  const [y,m,d] = String(str).split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
+function statusClass(s){
+  s = String(s || "").toUpperCase();
+  if(s === "PAID") return "badge-paid";
+  if(s === "CANCEL") return "badge-cancel";
+  if(s.includes("RESIT")) return "badge-resit";
+  return "badge-baru";
+}
+
+function showApp(){
+  $("loginScreen").classList.add("hidden");
+  $("app").classList.remove("hidden");
+  updateIcon();
+}
+
+function showLogin(){
+  $("app").classList.add("hidden");
+  $("loginScreen").classList.remove("hidden");
+}
+
+async function login(){
+  const email = $("emailInput").value.trim();
+  const password = $("passwordInput").value;
+  $("loginMsg").innerText = "";
+
+  if(!email || !password){
+    $("loginMsg").innerText = "Please enter email and password.";
+    return;
+  }
+
+  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+  if(error){
+    $("loginMsg").innerText = error.message;
+    return;
+  }
+
+  showApp();
+  await load();
+}
+
+async function logout(){
+  await supabaseClient.auth.signOut();
+  DATA = [];
+  showLogin();
+}
+
+async function getReceiptUrl(path){
+  if(!path) return "";
+  const { data, error } = await supabaseClient.storage.from("receipts").createSignedUrl(path, 60 * 10);
+  if(error){
+    console.error(error);
+    return "";
+  }
+  return data?.signedUrl || "";
+}
+
 async function load(){
- try{
-  let r=await fetch(API+"?action=list&token="+encodeURIComponent(TOKEN),{cache:"no-store"});let j=JSON.parse(await r.text());
-  if(j.message==="UNAUTHORIZED"){logout();return} DATA=Array.isArray(j)?j:j.data||[];
-  buildMap(); render(); renderCal(curDate.getFullYear(),curDate.getMonth());
- }catch(e){$("tbody").innerHTML='<tr><td colspan="7" style="text-align:center;padding:30px">❌ '+esc(e.message)+'</td></tr>'}
-}
-function buildMap(){bookedMap={}; DATA.forEach(b=>{if(String(b.status).toUpperCase()==="CANCEL")return; let s=new Date(b.checkin), e=new Date(b.checkout); for(let x=new Date(s); x<e; x.setDate(x.getDate()+1)){let iso=x.toISOString().split('T')[0]; if(!bookedMap[iso]) bookedMap[iso]=[]; bookedMap[iso].push(b)}})}
-function renderCal(y,m){
- let grid=$("calGrid"), label=$("calMonth"), names=["Jan","Feb","Mac","Apr","Mei","Jun","Jul","Ogos","Sep","Okt","Nov","Dis"];
- label.textContent=names[m]+" "+y; grid.innerHTML="";
- ["AH","IS","SE","RA","KH","JU","SA"].forEach(d=>{let el=document.createElement('div');el.className="cal-dn";el.textContent=d;grid.appendChild(el);});
- let first=new Date(y,m,1).getDay(), days=new Date(y,m+1,0).getDate();
- for(let i=0;i<first;i++){let e=document.createElement('div');e.className="cal-d empty";grid.appendChild(e);}
- for(let d=1;d<=days;d++){let iso=new Date(y,m,d).toISOString().split('T')[0], list=bookedMap[iso]||[]; let el=document.createElement('div'); el.className="cal-d "+(list.length?"booked":""); el.onclick=()=>{$("fDate").value=iso;render()}; el.innerHTML=`<div style="font-weight:600;font-size:12px">${d}</div>${list.slice(0,1).map(b=>`<span class="cal-badge ${String(b.status)==="PAID"?"b-paid":"b-baru"}">${esc(b.nama).split(' ')[0].substring(0,8)}</span>`).join("")}`; grid.appendChild(el);}
-}
-$("prevM").onclick=()=>{curDate.setMonth(curDate.getMonth()-1);renderCal(curDate.getFullYear(),curDate.getMonth())};
-$("nextM").onclick=()=>{curDate.setMonth(curDate.getMonth()+1);renderCal(curDate.getFullYear(),curDate.getMonth())};
-function clearFilter(){$("q").value="";$("fStatus").value="";$("fDate").value="";render()}
-function render(){
- let q=$("q").value.toLowerCase(), fs=$("fStatus").value, fd=$("fDate").value;
- let filtered=DATA.filter(b=>{let st=String(b.status||""); if(fs&&!st.includes(fs))return false; if(fd){if(!(fd>=String(b.checkin)&&fd<String(b.checkout)))return false} if(q&&!((b.nama||"")+" "+(b.phone||"")).toLowerCase().includes(q))return false; return true;});
- $("sTotal").innerText=DATA.length; $("sPending").innerText=DATA.filter(x=>String(x.status).includes("Baru")||String(x.status).includes("Resit")).length; $("sCancel").innerText=DATA.filter(x=>String(x.status).toUpperCase().includes("CANCEL")).length; $("sPaid").innerText="RM"+DATA.filter(x=>String(x.status)==="PAID").reduce((s,x)=>s+Number(x.jumlah||0),0).toLocaleString();
- filtered.sort((a,b)=>Number(b.row)-Number(a.row));
- if(!filtered.length){$("tbody").innerHTML='<tr><td colspan="7"><div style="text-align:center;padding:30px;color:var(--muted)">📭 Tiada data</div></td></tr>';return;}
+  try{
+    $("tbody").innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px">Loading...</td></tr>';
 
- let html="";
- filtered.forEach(b=>{
-  html+=`
-  <tr>
-    <td data-label="Row">#${b.row}</td>
-    <td data-label="Guest">
-      <div class="guest-top"><span class="guest-name">${esc(b.nama)}</span><span class="badge ${statusClass(b.status)}">${esc(b.status)}</span></div>
-      <span class="guest-row">📱 ${esc(b.phone)}</span>
-      <span class="guest-email">✉️ ${esc(b.email)}</span>
-      <span class="guest-row">🗓️ ${esc(b.checkin)} → ${esc(b.checkout)} · ${esc(b.malam)} malam · RM${esc(b.jumlah)}</span>
-    </td>
-    <td data-label="Check-in/Out">${esc(b.checkin)} → ${esc(b.checkout)}</td>
-    <td data-label="RM">RM${esc(b.jumlah)}<br><small style="color:var(--muted)">${esc(b.malam)} malam</small></td>
-    <td data-label="Status"><span class="badge ${statusClass(b.status)}">${esc(b.status)}</span></td>
-    <td data-label="Resit">${b.resit?`<a href="${safeUrl(b.resit)}" target="_blank" class="btn btn-resit">📎 Resit</a>`:`-`}</td>
-    <td data-label="Action"><div class="action-box"><button class="btn btn-paid" onclick="updateStatus(${b.row},'PAID')">✓ PAID</button><button class="btn btn-wa" onclick="wa(${b.row})">WA</button><button class="btn btn-delete" onclick="del(${b.row})">🗑</button></div></td>
-  </tr>`;
- });
- $("tbody").innerHTML=html;
+    const { data, error } = await supabaseClient
+      .from("bookings")
+      .select("id,nama,phone,email,checkin,checkout,malam,jumlah,status,resit_path,notes,created_at")
+      .order("created_at", { ascending:false });
+
+    if(error) throw error;
+
+    DATA = data || [];
+
+    await Promise.all(DATA.map(async b => {
+      b.resit_url = b.resit_path ? await getReceiptUrl(b.resit_path) : "";
+    }));
+
+    buildMap();
+    render();
+    renderCal(curDate.getFullYear(), curDate.getMonth());
+
+  }catch(e){
+    console.error(e);
+    $("tbody").innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px">❌ '+esc(e.message)+'</td></tr>';
+  }
 }
-async function updateStatus(row,status){if(!confirm("Tukar jadi "+status+"?"))return; await fetch(API,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({action:"updateStatus",row,status,token:TOKEN})}); load()}
-async function del(row){if(prompt("Taip DELETE")!=="DELETE")return; await fetch(API,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({action:"deleteBooking",row,token:TOKEN})}); load()}
-function wa(row){let b=DATA.find(x=>Number(x.row)===Number(row)); let p=String(b.phone).replace(/[^0-9]/g,""); if(p.startsWith("0"))p="60"+p.slice(1); window.open("https://wa.me/"+p+"?text="+encodeURIComponent(`Salam ${b.nama}, booking ${b.checkin}→${b.checkout} RM${b.jumlah} ${b.status}`),"_blank")}
-setInterval(()=>{if($("clock"))$("clock").innerText=new Date().toLocaleTimeString("ms-MY",{hour:"2-digit",minute:"2-digit"})},60000);
-window.addEventListener("DOMContentLoaded",()=>{if(TOKEN){showApp();load()}else showLogin()});
+
+function buildMap(){
+  bookedMap = {};
+
+  DATA.forEach(b => {
+    if(String(b.status).toUpperCase() === "CANCEL") return;
+    if(!b.checkin || !b.checkout) return;
+
+    let s = parseDateLocal(b.checkin);
+    let e = parseDateLocal(b.checkout);
+
+    for(let x = new Date(s); x < e; x.setDate(x.getDate() + 1)){
+      let iso = toISODateLocal(x);
+      if(!bookedMap[iso]) bookedMap[iso] = [];
+      bookedMap[iso].push(b);
+    }
+  });
+}
+
+function renderCal(y,m){
+  const grid = $("calGrid");
+  const label = $("calMonth");
+  const names = ["Jan","Feb","Mac","Apr","Mei","Jun","Jul","Ogos","Sep","Okt","Nov","Dis"];
+
+  label.textContent = names[m] + " " + y;
+  grid.innerHTML = "";
+
+  ["AH","IS","SE","RA","KH","JU","SA"].forEach(d => {
+    const el = document.createElement("div");
+    el.className = "cal-dn";
+    el.textContent = d;
+    grid.appendChild(el);
+  });
+
+  const first = new Date(y,m,1).getDay();
+  const days = new Date(y,m+1,0).getDate();
+
+  for(let i=0;i<first;i++){
+    const e = document.createElement("div");
+    e.className = "cal-d empty";
+    grid.appendChild(e);
+  }
+
+  for(let d=1; d<=days; d++){
+    const iso = toISODateLocal(new Date(y,m,d));
+    const list = bookedMap[iso] || [];
+    const el = document.createElement("div");
+
+    el.className = "cal-d " + (list.length ? "booked" : "");
+    el.onclick = () => {
+      $("fDate").value = iso;
+      render();
+    };
+
+    el.innerHTML =
+      `<div style="font-weight:600;font-size:12px">${d}</div>` +
+      list.slice(0,1).map(b => {
+        const cls = String(b.status) === "PAID" ? "b-paid" : "b-baru";
+        const name = esc(b.nama).split(" ")[0].substring(0,8);
+        return `<span class="cal-badge ${cls}">${name}</span>`;
+      }).join("");
+
+    grid.appendChild(el);
+  }
+}
+
+$("prevM").onclick = () => {
+  curDate.setMonth(curDate.getMonth() - 1);
+  renderCal(curDate.getFullYear(), curDate.getMonth());
+};
+
+$("nextM").onclick = () => {
+  curDate.setMonth(curDate.getMonth() + 1);
+  renderCal(curDate.getFullYear(), curDate.getMonth());
+};
+
+function clearFilter(){
+  $("q").value = "";
+  $("fStatus").value = "";
+  $("fDate").value = "";
+  render();
+}
+
+function render(){
+  const q = $("q").value.toLowerCase();
+  const fs = $("fStatus").value;
+  const fd = $("fDate").value;
+
+  let filtered = DATA.filter(b => {
+    const st = String(b.status || "");
+
+    if(fs && st !== fs) return false;
+
+    if(fd){
+      if(!(fd >= String(b.checkin) && fd < String(b.checkout))) return false;
+    }
+
+    if(q){
+      const haystack = ((b.nama || "")+" "+(b.phone || "")+" "+(b.email || "")).toLowerCase();
+      if(!haystack.includes(q)) return false;
+    }
+
+    return true;
+  });
+
+  $("sTotal").innerText = DATA.length;
+  $("sPending").innerText = DATA.filter(x => String(x.status).includes("Baru") || String(x.status).includes("Resit")).length;
+  $("sCancel").innerText = DATA.filter(x => String(x.status).toUpperCase().includes("CANCEL")).length;
+  $("sPaid").innerText = "RM" + DATA.filter(x => String(x.status) === "PAID").reduce((s,x) => s + Number(x.jumlah || 0), 0).toLocaleString();
+
+  filtered.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+
+  if(!filtered.length){
+    $("tbody").innerHTML = '<tr><td colspan="7"><div style="text-align:center;padding:30px;color:var(--muted)">📭 Tiada data</div></td></tr>';
+    return;
+  }
+
+  let html = "";
+
+  filtered.forEach((b, index) => {
+    const no = filtered.length - index;
+    const receiptButton = b.resit_url
+      ? `<a href="${esc(b.resit_url)}" target="_blank" class="btn btn-resit">📎 Resit</a>`
+      : "-";
+
+    html += `
+      <tr>
+        <td data-label="No">#${no}</td>
+
+        <td data-label="Guest">
+          <div class="guest-top">
+            <span class="guest-name">${esc(b.nama)}</span>
+            <span class="badge ${statusClass(b.status)}">${esc(b.status)}</span>
+          </div>
+          <span class="guest-row">📱 ${esc(b.phone)}</span>
+          <span class="guest-email">✉️ ${esc(b.email)}</span>
+          <span class="guest-row">🗓️ ${esc(b.checkin)} → ${esc(b.checkout)} · ${esc(b.malam)} malam · RM${esc(b.jumlah)}</span>
+        </td>
+
+        <td data-label="Check-in/Out">${esc(b.checkin)} → ${esc(b.checkout)}</td>
+
+        <td data-label="RM">
+          RM${esc(b.jumlah)}
+          <br>
+          <small style="color:var(--muted)">${esc(b.malam)} malam</small>
+        </td>
+
+        <td data-label="Status">
+          <span class="badge ${statusClass(b.status)}">${esc(b.status)}</span>
+        </td>
+
+        <td data-label="Resit">${receiptButton}</td>
+
+        <td data-label="Action">
+          <div class="action-box">
+            <button class="btn btn-paid" onclick="updateStatus('${esc(b.id)}','PAID')">✓ PAID</button>
+            <button class="btn btn-wa" onclick="wa('${esc(b.id)}')">WA</button>
+            <button class="btn btn-cancel" onclick="cancelBooking('${esc(b.id)}')">CANCEL</button>
+            <button class="btn btn-delete" onclick="deleteBooking('${esc(b.id)}')">🗑</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  });
+
+  $("tbody").innerHTML = html;
+}
+
+async function updateStatus(id,status){
+  if(!confirm("Tukar jadi " + status + "?")) return;
+
+  const { error } = await supabaseClient.from("bookings").update({ status }).eq("id", id);
+
+  if(error){
+    alert("Error: " + error.message);
+    return;
+  }
+
+  await load();
+}
+
+async function cancelBooking(id){
+  if(prompt("Taip CANCEL") !== "CANCEL") return;
+
+  const { error } = await supabaseClient.from("bookings").update({ status:"CANCEL" }).eq("id", id);
+
+  if(error){
+    alert("Error: " + error.message);
+    return;
+  }
+
+  await load();
+}
+
+async function deleteBooking(id){
+  if(prompt("Taip DELETE") !== "DELETE") return;
+
+  const booking = DATA.find(x => String(x.id) === String(id));
+
+  const { error } = await supabaseClient.from("bookings").delete().eq("id", id);
+
+  if(error){
+    alert("Error: " + error.message);
+    return;
+  }
+
+  if(booking && booking.resit_path){
+    await supabaseClient.storage.from("receipts").remove([booking.resit_path]);
+  }
+
+  await load();
+}
+
+function wa(id){
+  const b = DATA.find(x => String(x.id) === String(id));
+  if(!b) return;
+
+  let p = String(b.phone || "").replace(/[^0-9]/g,"");
+  if(p.startsWith("0")) p = "60" + p.slice(1);
+
+  window.open(
+    "https://wa.me/" + p + "?text=" +
+    encodeURIComponent(`Salam ${b.nama}, booking ${b.checkin} → ${b.checkout} RM${b.jumlah} status: ${b.status}`),
+    "_blank"
+  );
+}
+
+function updateClock(){
+  if($("clock")){
+    $("clock").innerText = new Date().toLocaleTimeString("ms-MY", {
+      hour:"2-digit",
+      minute:"2-digit"
+    });
+  }
+}
+
+setInterval(updateClock, 60000);
+updateClock();
+
+window.addEventListener("DOMContentLoaded", async () => {
+  updateIcon();
+
+  const { data } = await supabaseClient.auth.getSession();
+
+  if(data.session){
+    showApp();
+    load();
+  }else{
+    showLogin();
+  }
+});
 </script>
+
 </body>
 </html>

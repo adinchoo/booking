@@ -11,6 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
   --bg:#fdfbf7; --card:#ffffff; --card2:#faf6f1; --border:#f0e6db; --border2:#e8ddd0;
@@ -115,9 +116,51 @@ document.documentElement.setAttribute('data-theme',savedTheme);
 function updateIcon(){document.getElementById('themeBtn').innerText=document.documentElement.getAttribute('data-theme')==='light'?'🌙':'☀️'}
 function toggleTheme(){let cur=document.documentElement.getAttribute('data-theme');let nxt=cur==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',nxt);localStorage.setItem('cc_theme',nxt);updateIcon()}updateIcon();
 
-const PRICE=250, SCRIPT_URL="https://script.google.com/macros/s/AKfycbwJ140Nh9wbVnqaqKHDyQZZWS5kJNiCYj0plJvlgW7PVZuMp-6ucVkv5v1WnuECQLVT/exec";
+const PRICE = 250;
+
+const SUPABASE_URL = "https://ynxvbbqmkkkrnfwpegqk.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlueHZiYnFta2trcm5md3BlZ3FrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAyNzgyODcsImV4cCI6MjEwNTg1NDI4N30.MYAbDCjvyTdS9pZjxHkOetWVH4cV9eENCD_TwhFIZIY";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 let fpIn,fpOut,bookedSet=new Set(),curDate=new Date(),selectedRange=[];
-async function loadBooked(){try{let r=await fetch(SCRIPT_URL+"?action=bookings",{cache:"no-store"});let d=await r.json();let dis=[];d.forEach(b=>{if(!b.checkin||!b.checkout)return;let s=new Date(b.checkin),e=new Date(b.checkout);for(let x=new Date(s);x<e;x.setDate(x.getDate()+1)){let iso=x.toISOString().split('T')[0];dis.push(iso);bookedSet.add(iso)}});initCal(dis);renderCal(curDate.getFullYear(),curDate.getMonth())}catch(e){initCal([]);renderCal(curDate.getFullYear(),curDate.getMonth())}}
+async function loadBooked(){
+  try{
+    bookedSet.clear();
+
+    const { data, error } = await supabaseClient.rpc("get_booked_ranges");
+
+    if(error){
+      throw error;
+    }
+
+    let dis = [];
+
+    data.forEach(b => {
+      if(!b.checkin || !b.checkout) return;
+
+      let s = new Date(b.checkin);
+      let e = new Date(b.checkout);
+
+      for(let x = new Date(s); x < e; x.setDate(x.getDate() + 1)){
+        let iso = x.toISOString().split("T")[0];
+        dis.push(iso);
+        bookedSet.add(iso);
+      }
+    });
+
+    initCal(dis);
+    renderCal(curDate.getFullYear(), curDate.getMonth());
+
+  }catch(e){
+    console.error(e);
+    status.innerHTML = "⚠️ Calendar gagal load. Check Supabase setup.";
+    initCal([]);
+    renderCal(curDate.getFullYear(), curDate.getMonth());
+  }
+}
 function initCal(dis){fpIn=flatpickr("#checkin",{minDate:"today",disable:dis,dateFormat:"Y-m-d",disableMobile:true,onChange:s=>{if(s[0]){fpOut.set('minDate',new Date(s[0].getTime()+86400000));calc();updateRange()}}});fpOut=flatpickr("#checkout",{minDate:"today",disable:dis,dateFormat:"Y-m-d",disableMobile:true,onChange:()=>{calc();updateRange()}})}
 function calc(){
   let cin=checkin.value,cout=checkout.value,box=document.getElementById('totalBox'),qrTot=document.getElementById('qrTotal');
@@ -134,8 +177,113 @@ function renderCal(y,m){let grid=document.getElementById('calGrid'),label=docume
 prevM.onclick=()=>{curDate.setMonth(curDate.getMonth()-1);renderCal(curDate.getFullYear(),curDate.getMonth())};nextM.onclick=()=>{curDate.setMonth(curDate.getMonth()+1);renderCal(curDate.getFullYear(),curDate.getMonth())};
 function compressImage(f){return new Promise(r=>{let img=new Image(),rd=new FileReader();rd.onload=e=>{img.src=e.target.result};img.onload=()=>{let c=document.createElement('canvas'),maxW=1280,ratio=img.width>maxW?maxW/img.width:1;c.width=img.width*ratio;c.height=img.height*ratio;c.getContext('2d').drawImage(img,0,0,c.width,c.height);c.toBlob(b=>r(b),'image/jpeg',0.72)};rd.readAsDataURL(f)})}
 resit.addEventListener('change',async function(){let f=this.files[0];if(!f)return;fileName.innerText="Compressing...";let comp=await compressImage(f);let dt=new DataTransfer();dt.items.add(new File([comp],f.name.replace(/\.\w+$/,'')+'.jpg',{type:'image/jpeg'}));this.files=dt.files;fileName.innerText="✅ "+(comp.size/1024).toFixed(0)+"KB - "+dt.files[0].name});
-function toBase64(f){return new Promise((res,rej)=>{let r=new FileReader();r.readAsDataURL(f);r.onload=()=>res(r.result);r.onerror=rej})}
-bookingForm.addEventListener('submit',async e=>{e.preventDefault();let box=document.getElementById('totalBox'),file=resit.files[0];if(!box.dataset.malam){status.innerHTML="❌ Pilih tarikh dulu";return}if(!file){status.innerHTML="❌ Upload resit dulu";return}btnBook.disabled=true;btnBook.textContent="UPLOADING...";status.innerHTML="⏳ Simpan...";progressWrap.style.display="block";progressBar.style.width="20%";try{let b64=await toBase64(file);progressBar.style.width="50%";let payload={nama:nama.value,phone:phone.value,email:email.value,checkin:checkin.value,checkout:checkout.value,malam:box.dataset.malam,jumlah:box.dataset.jumlah,resitBase64:b64.split(',')[1],resitType:file.type,resitName:file.name};let res=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)});progressBar.style.width="85%";let j=JSON.parse(await res.text());progressBar.style.width="100%";if(j.status==="ok"||j.ok){status.innerHTML="✅ Berjaya!";btnBook.textContent="✅ BERJAYA!";setTimeout(()=>{window.location.href="https://api.whatsapp.com/send?phone=60189424611&text="+encodeURIComponent("Salam Choo Cottage, saya "+payload.nama+" booking "+payload.checkin+" hingga "+payload.checkout+" RM"+payload.jumlah+" Resit uploaded.")},1500)}else throw new Error(j.message)}catch(err){progressWrap.style.display="none";status.innerHTML="❌ "+err.message;btnBook.disabled=false;btnBook.textContent="HANTAR BOOKING + RESIT"}});
+bookingForm.addEventListener("submit", async e => {
+  e.preventDefault();
+
+  const box = document.getElementById("totalBox");
+  const file = resit.files[0];
+
+  if(!nama.value.trim() || !phone.value.trim() || !email.value.trim()){
+    status.innerHTML = "❌ Lengkapkan nama, phone dan email";
+    return;
+  }
+
+  if(!box.dataset.malam){
+    status.innerHTML = "❌ Pilih tarikh dulu";
+    return;
+  }
+
+  if(!file){
+    status.innerHTML = "❌ Upload resit dulu";
+    return;
+  }
+
+  btnBook.disabled = true;
+  btnBook.textContent = "UPLOADING...";
+  status.innerHTML = "⏳ Upload resit...";
+  progressWrap.style.display = "block";
+  progressBar.style.width = "20%";
+
+  try{
+    const cleanFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+    const receiptPath =
+      Date.now() +
+      "-" +
+      Math.random().toString(36).slice(2) +
+      "-" +
+      cleanFileName;
+
+    const { error: uploadError } = await supabaseClient
+      .storage
+      .from("receipts")
+      .upload(receiptPath, file, {
+        contentType: file.type,
+        upsert: false
+      });
+
+    if(uploadError){
+      throw uploadError;
+    }
+
+    progressBar.style.width = "60%";
+    status.innerHTML = "⏳ Simpan booking...";
+
+    const payload = {
+      nama: nama.value.trim(),
+      phone: phone.value.trim(),
+      email: email.value.trim(),
+      checkin: checkin.value,
+      checkout: checkout.value,
+      price_per_night: PRICE,
+      status: "Resit Uploaded - Check!",
+      resit_path: receiptPath
+    };
+
+    const { error: insertError } = await supabaseClient
+      .from("bookings")
+      .insert(payload);
+
+    if(insertError){
+      if(
+        insertError.message &&
+        insertError.message.includes("no_overlapping_bookings")
+      ){
+        throw new Error("Tarikh ini sudah penuh. Sila pilih tarikh lain.");
+      }
+
+      throw insertError;
+    }
+
+    progressBar.style.width = "100%";
+    status.innerHTML = "✅ Berjaya!";
+    btnBook.textContent = "✅ BERJAYA!";
+
+    const jumlah = box.dataset.jumlah;
+
+    setTimeout(() => {
+      window.location.href =
+        "https://api.whatsapp.com/send?phone=60189424611&text=" +
+        encodeURIComponent(
+          "Salam Choo Cottage, saya " +
+          payload.nama +
+          " booking " +
+          payload.checkin +
+          " hingga " +
+          payload.checkout +
+          " RM" +
+          jumlah +
+          " Resit uploaded."
+        );
+    }, 1500);
+
+  }catch(err){
+    console.error(err);
+    progressWrap.style.display = "none";
+    status.innerHTML = "❌ " + err.message;
+    btnBook.disabled = false;
+    btnBook.textContent = "HANTAR BOOKING + RESIT";
+  }
+});
 loadBooked();
 if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}
 </script>
